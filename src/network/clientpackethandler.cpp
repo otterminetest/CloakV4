@@ -814,7 +814,7 @@ void Client::handleCommand_Media(NetworkPacket* pkt)
 void Client::handleCommand_NodeDef(NetworkPacket* pkt)
 {
     infostream << "Client: Received node definitions: packet size: "
-            << pkt->getSize() << std::endl;
+               << pkt->getSize() << std::endl;
 
     // Mesh update thread must be stopped while
     // updating content definitions
@@ -851,23 +851,17 @@ void Client::handleCommand_NodeDef(NetworkPacket* pkt)
         if (!cf.groups.empty()) {
             std::cout << "  Groups: ";
             for (const auto &group : cf.groups) {
-                std::cout << group.name << "=" << group.rating << " ";
+                std::cout << group.first << "=" << group.second << " ";
             }
             std::cout << "\n";
         }
 
-        // Print param types
-        std::cout << "  Param type: " << static_cast<int>(cf.param_type)
-                  << ", Param type 2: " << static_cast<int>(cf.param_type_2) << "\n";
-
-        // Print drawtype
-        std::cout << "  Drawtype: " << static_cast<int>(cf.drawtype) << "\n";
-
         // Print physical properties
         std::cout << "  Walkable: " << (cf.walkable ? "true" : "false") << "\n";
-        std::cout << "  Pointable: " << (cf.pointable ? "true" : "false") << "\n";
+        std::cout << "  Pointable: " << pointable_str << "\n";
         std::cout << "  Diggable: " << (cf.diggable ? "true" : "false") << "\n";
         std::cout << "  Climbable: " << (cf.climbable ? "true" : "false") << "\n";
+        std::cout << "  Buildable to: " << (cf.buildable_to ? "true" : "false") << "\n";
 
         // Add more properties as needed
         std::cout << "\n";
