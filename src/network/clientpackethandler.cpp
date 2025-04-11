@@ -813,21 +813,65 @@ void Client::handleCommand_Media(NetworkPacket* pkt)
 
 void Client::handleCommand_NodeDef(NetworkPacket* pkt)
 {
-	infostream << "Client: Received node definitions: packet size: "
-			<< pkt->getSize() << std::endl;
+    infostream << "Client: Received node definitions: packet size: "
+            << pkt->getSize() << std::endl;
 
-	// Mesh update thread must be stopped while
-	// updating content definitions
-	sanity_check(!m_mesh_update_manager->isRunning());
+    // Mesh update thread must be stopped while
+    // updating content definitions
+    sanity_check(!m_mesh_update_manager->isRunning());
 
-	// Decompress node definitions
-	std::istringstream tmp_is(pkt->readLongString(), std::ios::binary);
-	std::stringstream tmp_os(std::ios::binary | std::ios::in | std::ios::out);
-	decompressZlib(tmp_is, tmp_os);
+    // Decompress node definitions
+    std::istringstream tmp_is(pkt->readLongString(), std::ios::binary);
+    std::stringstream tmp_os(std::ios::binary | std::ios::in | std::ios::out);
+    decompressZlib(tmp_is, tmp_os);
 
-	// Deserialize node definitions
-	m_nodedef->deSerialize(tmp_os, m_proto_ver);
-	m_nodedef_received = true;
+    // Deserialize node definitions
+    m_nodedef->deSerialize(tmp_os, m_proto_ver);
+    m_nodedef_received = true;
+
+    // Add code to print out all node names and their definitions
+    std::cout << "List of node names and their definitions:\n";
+    size_t empty_counter = 0;
+    size_t empty_limit = 1024; // Stop if we encounter too many empty entries
+    for (content_t id = 0; id < 5000; ++id) {
+        const ContentFeatures &cf = m_nodedef->get(id);
+        // Skip empty or unknown nodes
+        if (cf.name.empty() || cf.name == "unknown") {
+            ++empty_counter;
+            if (empty_counter >= empty_limit)
+                break; // Assume no more valid nodes
+            continue;
+        }
+        empty_counter = 0; // Reset counter when a valid node is found
+
+        // Print node ID and name
+        std::cout << "Node ID: " << id << ", Name: \"" << cf.name << "\"\n";
+
+        // Print groups
+        if (!cf.groups.empty()) {
+            std::cout << "  Groups: ";
+            for (const auto &group : cf.groups) {
+                std::cout << group.name << "=" << group.rating << " ";
+            }
+            std::cout << "\n";
+        }
+
+        // Print param types
+        std::cout << "  Param type: " << static_cast<int>(cf.param_type)
+                  << ", Param type 2: " << static_cast<int>(cf.param_type_2) << "\n";
+
+        // Print drawtype
+        std::cout << "  Drawtype: " << static_cast<int>(cf.drawtype) << "\n";
+
+        // Print physical properties
+        std::cout << "  Walkable: " << (cf.walkable ? "true" : "false") << "\n";
+        std::cout << "  Pointable: " << (cf.pointable ? "true" : "false") << "\n";
+        std::cout << "  Diggable: " << (cf.diggable ? "true" : "false") << "\n";
+        std::cout << "  Climbable: " << (cf.climbable ? "true" : "false") << "\n";
+
+        // Add more properties as needed
+        std::cout << "\n";
+    }
 }
 
 void Client::handleCommand_ItemDef(NetworkPacket* pkt)
