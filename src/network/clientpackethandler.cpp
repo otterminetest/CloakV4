@@ -858,7 +858,6 @@ void Client::handleCommand_NodeDef(NetworkPacket* pkt)
 
         // Print physical properties
         std::cout << "  Walkable: " << (cf.walkable ? "true" : "false") << "\n";
-        std::cout << "  Pointable: " << pointable_str << "\n";
         std::cout << "  Diggable: " << (cf.diggable ? "true" : "false") << "\n";
         std::cout << "  Climbable: " << (cf.climbable ? "true" : "false") << "\n";
         std::cout << "  Buildable to: " << (cf.buildable_to ? "true" : "false") << "\n";
