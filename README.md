@@ -1,5 +1,5 @@
 Cloak V4
-==============
+===============
 <img src="doc/showcase1.png" alt="showcase" width="80%" />
 
 A minetest cheat client based off of [Chimeraclient](https://github.com/plus-22/chimeraclient/), which draws its roots from [OtterClient](https://github.com/otterminetest/OtterClient/).
