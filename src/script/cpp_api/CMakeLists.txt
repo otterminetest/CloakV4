@@ -1,4 +1,5 @@
 set(common_SCRIPT_CPP_API_SRCS
+    ${CMAKE_CURRENT_SOURCE_DIR}/s_cheats.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/s_async.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/s_base.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/s_entity.cpp

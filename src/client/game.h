@@ -6,6 +6,7 @@
 
 #include "irrlichttypes.h"
 #include "config.h"
+#include "gui/cheatMenu.h"
 #include <string>
 
 #if !IS_CLIENT_BUILD
@@ -43,3 +44,5 @@ void the_game(bool *kill,
 		std::string &error_message,
 		ChatBackend &chat_backend,
 		bool *reconnect_requested);
+
+inline CheatMenu *m_cheat_menu = nullptr;
