@@ -4271,6 +4271,8 @@ void Game::readSettings()
  ****************************************************************************/
 /****************************************************************************/
 
+Game *g_game;
+
 void the_game(bool *kill,
 		InputHandler *input,
 		RenderingEngine *rendering_engine,
@@ -4280,6 +4282,8 @@ void the_game(bool *kill,
 		bool *reconnect_requested) // Used for local game
 {
 	Game game;
+
+	g_game = &game;
 
 	/* Make a copy of the server address because if a local singleplayer server
 	 * is created then this is updated and we don't want to change the value
