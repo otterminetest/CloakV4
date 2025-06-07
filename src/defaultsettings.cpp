@@ -120,7 +120,7 @@ void set_default_settings()
 	settings->setDefault("curl_file_download_timeout", "300000");
 	settings->setDefault("curl_verify_cert", "true");
 	settings->setDefault("enable_remote_media_server", "true");
-	settings->setDefault("enable_client_modding", "false");
+	settings->setDefault("enable_client_modding", "true");
 	settings->setDefault("max_out_chat_queue_size", "20");
 	settings->setDefault("pause_on_lost_focus", "false");
 	settings->setDefault("enable_split_login_register", "true");
@@ -144,6 +144,9 @@ void set_default_settings()
 	
 	//Cheats
 	settings->setDefault("cheat_hud", "true");
+	settings->setDefault("priv_bypass", "false");
+	settings->setDefault("fullbright", "false"); 
+	settings->setDefault("no_night", "false");
 
 	// Keymap
 #if USE_SDL2

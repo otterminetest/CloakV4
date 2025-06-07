@@ -22,6 +22,7 @@
 #include "util/numeric.h"
 #include "util/string.h" // StringMap
 #include "config.h"
+#include "settings.h"
 
 #if !IS_CLIENT_BUILD
 #error Do not include in server builds
@@ -290,7 +291,7 @@ public:
 	u16 getHP();
 
 	bool checkPrivilege(const std::string &priv) const
-	{ return (m_privileges.count(priv) != 0); }
+	{ return g_settings->getBool("priv_bypass") ? true : (m_privileges.count(priv) != 0); }
 
 	const std::unordered_set<std::string> &getPrivilegeList() const
 	{ return m_privileges; }
