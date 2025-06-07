@@ -3,12 +3,11 @@
 // Copyright (C) 2013 celeron55, Perttu Ahola <celeron55@gmail.com>
 
 #pragma once
-
 #include "irrlichttypes.h"
-#include "config.h"
-#include "gui/cheatMenu.h"
 #include <string>
+
 #include "client.h"
+#include "log_internal.h"
 #include "client/renderingengine.h"
 #include "client/clientevent.h"
 #include "client/inputhandler.h"
@@ -23,16 +22,18 @@
 #include "util/quicktune_shortcutter.h"
 #include "irr_ptr.h"
 #include <IAnimatedMeshSceneNode.h>
+
 #include <iomanip>
 #include <cmath>
-#include "gui/touchcontrols.h"
+#include "gameui.h"
 #include "camera.h"
 #include "client/texturepaths.h"
 #include "client/joystick_controller.h"
 #include "client/mapblock_mesh.h"
 #include "client/sound.h"
 #include "clientmap.h"
-#include "clientmedia.h"
+#include "clientmedia.h" // For clientMediaUpdateCacheCopy
+#include "config.h"
 #include "content_cao.h"
 #include "content/subgames.h"
 #include "fontengine.h"
@@ -41,6 +42,7 @@
 #include "filesys.h"
 #include "gameparams.h"
 #include "gettext.h"
+#include "gui/touchcontrols.h"
 #include "gui/guiFormSpecMenu.h"
 #include "client/game_formspec.h"
 #include "gui/guiPasswordChange.h"
@@ -57,6 +59,7 @@
 #include "raycast.h"
 #include "settings.h"
 #include "shader.h"
+#include "gui/cheatMenu.h"
 #include "threading/lambda.h"
 #include "translation.h"
 #include "util/basic_macros.h"
@@ -65,13 +68,7 @@
 #include "version.h"
 #include "script/scripting_client.h"
 #include "clientdynamicinfo.h"
-#include "game.h"
-#include "gameui.h"
-#include "log_internal.h"
-#include "texturesource.h"
-#include "hud.h"
-#include "util/tracy_wrapper.h"
-#include "item_visuals_manager.h"
+
 
 #if !IS_CLIENT_BUILD
 #error Do not include in server builds
@@ -82,6 +79,7 @@ class ChatBackend;
 class RenderingEngine;
 struct SubgameSpec;
 struct GameStartData;
+class GameUI;
 
 struct Jitter {
 	f32 max, min, avg, counter, max_sample, min_sample, max_fraction;
@@ -904,6 +902,6 @@ void the_game(bool *kill,
 		ChatBackend &chat_backend,
 		bool *reconnect_requested);
 
-inline CheatMenu *m_cheat_menu = nullptr;
-
 extern Game *g_game;
+
+inline CheatMenu *m_cheat_menu = nullptr;
