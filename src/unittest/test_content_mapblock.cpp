@@ -22,7 +22,9 @@ public:
 	IWritableItemDefManager *item_mgr() noexcept {
 		return static_cast<IWritableItemDefManager *>(m_itemdef);
 	}
-
+	IWritableItemDefManager* getWritableItemDefManager() override {
+        return nullptr;
+	}
 	NodeDefManager *node_mgr() noexcept {
 		return const_cast<NodeDefManager *>(m_nodedef);
 	}

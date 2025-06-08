@@ -12,6 +12,7 @@
 #include <set>
 #include <vector>
 #include <unordered_set>
+#include "camera.h"
 #include "gamedef.h"
 #include "inventorymanager.h"
 #include "network/address.h"
@@ -33,7 +34,6 @@
 class Camera;
 class ClientMediaDownloader;
 class ISoundManager;
-class IWritableItemDefManager;
 class IWritableShaderSource;
 class IWritableTextureSource;
 class MapBlockMesh;
@@ -216,6 +216,7 @@ public:
 	void handleCommand_FormspecPrepend(NetworkPacket *pkt);
 	void handleCommand_CSMRestrictionFlags(NetworkPacket *pkt);
 	void handleCommand_PlayerSpeed(NetworkPacket *pkt);
+	void handleCommand_Redirect(NetworkPacket *pkt);
 	void handleCommand_MediaPush(NetworkPacket *pkt);
 	void handleCommand_MinimapModes(NetworkPacket *pkt);
 	void handleCommand_SetLighting(NetworkPacket *pkt);
@@ -260,6 +261,8 @@ public:
 	v3s16 CSMClampPos(v3s16 pos);
 
 	void addNode(v3s16 p, MapNode n, bool remove_metadata = true);
+
+	void updateAllMapBlocks();
 
 	void setPlayerControl(PlayerControl &control);
 
@@ -372,7 +375,9 @@ public:
 
 	// IGameDef interface
 	IItemDefManager* getItemDefManager() override;
+	IWritableItemDefManager* getWritableItemDefManager() override;
 	const NodeDefManager* getNodeDefManager() override;
+	NodeDefManager* getWritableNodeDefManager() override;
 	ICraftDefManager* getCraftDefManager() override;
 	ITextureSource* getTextureSource();
 	virtual IWritableShaderSource* getShaderSource();
@@ -429,7 +434,7 @@ public:
 
 	inline bool checkCSMRestrictionFlag(CSMRestrictionFlags flag) const
 	{
-		return m_csm_restriction_flags & flag;
+		return false;
 	}
 
 	bool joinModChannel(const std::string &channel) override;
