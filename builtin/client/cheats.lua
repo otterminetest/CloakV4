@@ -2,7 +2,7 @@
 core.cheats = {
 	["Render"] = {
 		["CheatHUD"] = "cheat_hud",
-	--	["FullBright"] = "fullbright",
+		["FullBright"] = "fullbright",
 		["BrightNight"] = "no_night",
     },
 	["Player"] = {

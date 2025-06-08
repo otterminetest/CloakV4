@@ -112,6 +112,8 @@ Game::Game() :
 		&settingChangedCallback, this);
 	g_settings->registerChangedCallback("pause_on_lost_focus",
 		&settingChangedCallback, this);
+	g_settings->registerChangedCallback("fullbright",
+		&updateAllMapBlocksCallback, this);
 
 	readSettings();
 }
@@ -3432,7 +3434,10 @@ void Game::showOverlayMessage(const char *msg, float dtime, int percent, float *
 	m_rendering_engine->draw_load_screen(wstrgettext(msg), guienv, texture_src,
 			dtime, percent, indef_pos);
 }
-
+void Game::updateAllMapBlocksCallback(const std::string &setting_name, void *data)
+{
+	((Game *) data)->client->updateAllMapBlocks();
+}
 void Game::settingChangedCallback(const std::string &setting_name, void *data)
 {
 	((Game *)data)->readSettings();
