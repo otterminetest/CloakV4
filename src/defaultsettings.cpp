@@ -147,6 +147,8 @@ void set_default_settings()
 	settings->setDefault("priv_bypass", "false");
 	settings->setDefault("fullbright", "false"); 
 	settings->setDefault("no_night", "false");
+	settings->setDefault("xray", "false");
+	settings->setDefault("xray_nodes", "default:stone,mcl_core:stone");
 
 	// Keymap
 #if USE_SDL2

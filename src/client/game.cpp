@@ -114,6 +114,10 @@ Game::Game() :
 		&settingChangedCallback, this);
 	g_settings->registerChangedCallback("fullbright",
 		&updateAllMapBlocksCallback, this);
+	g_settings->registerChangedCallback("xray",
+		&updateAllMapBlocksCallback, this);	
+	g_settings->registerChangedCallback("xray_nodes",	
+		&updateAllMapBlocksCallback, this);
 
 	readSettings();
 }
@@ -140,6 +144,10 @@ Game::~Game()
 	clearTextureNameCache();
 
 	g_settings->deregisterAllChangedCallbacks(this);
+	g_settings->deregisterChangedCallback("xray",
+		&updateAllMapBlocksCallback, this);
+	g_settings->deregisterChangedCallback("xray_nodes",
+		&updateAllMapBlocksCallback, this);
 
 	if (m_rendering_engine)
 		m_rendering_engine->finalize();
