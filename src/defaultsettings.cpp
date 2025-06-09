@@ -149,6 +149,7 @@ void set_default_settings()
 	settings->setDefault("no_night", "false");
 	settings->setDefault("xray", "false");
 	settings->setDefault("xray_nodes", "default:stone,mcl_core:stone");
+	settings->setDefault("freecam", "false");
 
 	// Keymap
 #if USE_SDL2
@@ -182,7 +183,8 @@ void set_default_settings()
 
 	// see <https://github.com/luanti-org/luanti/issues/12792>
 	USEKEY2("keymap_rangeselect", has_touch ? "SYSTEM_SCANCODE_21" : "", has_touch ? "KEY_KEY_R" : "");
-
+	
+	settings->setDefault("keymap_toggle_freecam", "KEY_KEY_G");
 	USEKEY2("keymap_freemove", "SYSTEM_SCANCODE_14", "KEY_KEY_K");
 	settings->setDefault("keymap_pitchmove", "");
 	USEKEY2("keymap_fastmove", "SYSTEM_SCANCODE_13", "KEY_KEY_J");

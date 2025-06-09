@@ -345,7 +345,7 @@ GenericCAO::~GenericCAO()
 
 bool GenericCAO::getSelectionBox(aabb3f *toset) const
 {
-	if (!m_prop.is_visible || !m_is_visible || m_is_local_player) {
+	if (!m_prop.is_visible || !m_is_visible || (m_is_local_player && !g_settings->getBool("freecam"))) {
 		return false;
 	}
 	*toset = m_selection_box;
@@ -460,7 +460,7 @@ void GenericCAO::setAttachment(object_t parent_id, const std::string &bone,
 	} else if (!m_is_local_player) {
 		// Objects attached to the local player should be hidden in first person
 		m_is_visible = !m_attached_to_local ||
-			m_client->getCamera()->getCameraMode() != CAMERA_MODE_FIRST;
+			m_client->getCamera()->getCameraMode() != CAMERA_MODE_FIRST || g_settings->getBool("freecam");
 		m_force_visible = false;
 	} else {
 		// Local players need to have this set,
@@ -968,11 +968,12 @@ void GenericCAO::step(float dtime, ClientEnvironment *env)
 	// Handle model animations and update positions instantly to prevent lags
 	if (m_is_local_player) {
 		LocalPlayer *player = m_env->getLocalPlayer();
-		m_position = player->getPosition();
+		m_position = player->getLegitPosition();
 		pos_translator.val_current = m_position;
-		m_rotation.Y = wrapDegrees_0_360(player->getYaw());
-		rot_translator.val_current = m_rotation;
-
+		if (!g_settings->getBool("freecam")) {
+			m_rotation.Y = wrapDegrees_0_360(player->getYaw());
+			rot_translator.val_current = m_rotation;
+		}
 		if (m_is_visible) {
 			LocalPlayerAnimation old_anim = player->last_animation;
 			float old_anim_speed = player->last_animation_speed;
@@ -982,7 +983,7 @@ void GenericCAO::step(float dtime, ClientEnvironment *env)
 			f32 new_speed = player->local_animation_speed;
 
 			bool walking = false;
-			if (controls.movement_speed > 0.001f) {
+			if (controls.movement_speed > 0.001f && !g_settings->getBool("freecam")) {
 				new_speed *= controls.movement_speed;
 				walking = true;
 			}
@@ -995,8 +996,8 @@ void GenericCAO::step(float dtime, ClientEnvironment *env)
 					m_client->checkLocalPrivilege("fast")) &&
 					(controls.aux1 ||
 					(!player->touching_ground &&
-					g_settings->getBool("free_move") &&
-					m_client->checkLocalPrivilege("fly"))))
+					(g_settings->getBool("free_move") &&
+					m_client->checkLocalPrivilege("fly")))) || g_settings->getBool("freecam"))
 					new_speed *= 1.5;
 			// slowdown speed if sneaking
 			if (controls.sneak && walking)
@@ -1882,7 +1883,7 @@ void GenericCAO::updateMeshCulling()
 	if (!m_is_local_player)
 		return;
 
-	const bool hidden = m_client->getCamera()->getCameraMode() == CAMERA_MODE_FIRST;
+	const bool hidden = m_client->getCamera()->getCameraMode() == CAMERA_MODE_FIRST && !g_settings->getBool("freecam");
 
 	scene::ISceneNode *node = getSceneNode();
 
