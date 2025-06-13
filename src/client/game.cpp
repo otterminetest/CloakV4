@@ -120,6 +120,8 @@ Game::Game() :
 		&updateAllMapBlocksCallback, this);
 	g_settings->registerChangedCallback("freecam",
 		&freecamChangedCallback, this);
+	g_settings->registerChangedCallback("node_esp_nodes",
+		&updateAllMapBlocksCallback, this);
 
 	readSettings();
 }
@@ -152,6 +154,8 @@ Game::~Game()
 		&updateAllMapBlocksCallback, this);
 	g_settings->deregisterChangedCallback("freecam",
 		&freecamChangedCallback, this);
+	g_settings->deregisterChangedCallback("node_esp_nodes",
+		&updateAllMapBlocksCallback, this);
 
 	if (m_rendering_engine)
 		m_rendering_engine->finalize();
