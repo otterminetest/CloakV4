@@ -78,6 +78,7 @@ struct PlayerControl
 
 	// For client use
 	u32 getKeysPressed() const;
+	u32 getKeysPressedAutoSneak() const;
 	inline bool isMoving() const { return movement_speed > 0.001f; }
 
 	// For server use
