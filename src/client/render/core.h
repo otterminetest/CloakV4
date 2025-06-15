@@ -49,4 +49,6 @@ public:
 			bool _draw_wield_tool, bool _draw_crosshair);
 
 	ShadowRenderer *get_shadow_renderer() { return shadow_renderer; };
+
+	v2u32 getVirtualSize() const;
 };
