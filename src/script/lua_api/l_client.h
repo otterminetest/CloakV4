@@ -138,8 +138,6 @@ private:
 	// clear_task_tracer(start_pos, end_pos)
 	static int l_clear_task_tracer(lua_State *L);
 
-	//take_screenshot()
-     static int l_take_screenshot(lua_State *L);
 
 public:
 	static void Initialize(lua_State *L, int top);
