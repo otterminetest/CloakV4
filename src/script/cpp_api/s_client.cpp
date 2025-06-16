@@ -267,6 +267,8 @@ bool ScriptApiClient::on_block_data(v3s16 pos)
 	} catch (LuaError &e) {
 		getClient()->setFatalError(e);
 	}
+
+	return false;
 }
 
 bool ScriptApiClient::on_player_join(std::string name)

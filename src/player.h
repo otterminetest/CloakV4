@@ -200,7 +200,8 @@ public:
 	std::string formspec_prepend;
 
 	PlayerControl control;
-	const PlayerControl& getPlayerControl() { return control; }
+	PlayerControl lua_control;
+	PlayerControl& getPlayerControl();
 
 	PlayerPhysicsOverride physics_override;
 
