@@ -494,6 +494,15 @@ int LuaLocalPlayer::l_get_object(lua_State *L)
 	return 1;
 }
 
+// get_hotbar_size(self)
+int LuaLocalPlayer::l_get_hotbar_size(lua_State *L)
+{
+	LocalPlayer *player = getobject(L, 1);
+	lua_pushnumber(L, player->hud_hotbar_itemcount);
+
+	return 1;
+}
+
 LocalPlayer *LuaLocalPlayer::getobject(LuaLocalPlayer *ref)
 {
 	return ref->m_localplayer;
@@ -682,6 +691,6 @@ const luaL_Reg LuaLocalPlayer::methods[] = {
 		luamethod(LuaLocalPlayer, set_pos),
 		luamethod(LuaLocalPlayer, get_object),
 		luamethod(LuaLocalPlayer, set_physics_override),
-
+		luamethod(LuaLocalPlayer, get_hotbar_size),
 		{0, 0}
 };
