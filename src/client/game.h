@@ -79,7 +79,6 @@ class ChatBackend;
 class RenderingEngine;
 struct SubgameSpec;
 struct GameStartData;
-class GameUI;
 
 struct Jitter {
 	f32 max, min, avg, counter, max_sample, min_sample, max_fraction;
@@ -97,6 +96,7 @@ struct CameraOrientation {
 };
 //HERE COMES THE BIG LOAD
 
+class GameUI;
 
 class NodeDugEvent : public MtEvent
 {

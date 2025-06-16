@@ -222,8 +222,6 @@ void Game::run()
 
 	ProfilerGraph graph;
 	RunStats stats = {};
-	CameraOrientation cam_view_target = {};
-	CameraOrientation cam_view = {};
 	FpsControl draw_times;
 	f32 dtime; // in seconds
 
