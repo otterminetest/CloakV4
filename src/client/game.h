@@ -68,7 +68,7 @@
 #include "version.h"
 #include "script/scripting_client.h"
 #include "clientdynamicinfo.h"
-
+#include "gui/NewMenu.h"
 
 #if !IS_CLIENT_BUILD
 #error Do not include in server builds
@@ -823,6 +823,7 @@ private:
 	std::unique_ptr<GameUI> m_game_ui;
 	irr_ptr<GUIChatConsole> gui_chat_console;
 	MapDrawControl *draw_control = nullptr;
+	NewMenu *new_menu = nullptr;
 	Camera *camera = nullptr;
 	irr_ptr<Clouds> clouds;
 	irr_ptr<Sky> sky;
