@@ -1648,6 +1648,7 @@ void Client::setPlayerControl(PlayerControl &control)
 	assert(player);
 	player->control = control;
 	player->lua_control.setMovementFromKeys();
+	player->empty_control.setMovementFromKeys();
 }
 
 void Client::setPlayerItem(u16 item)
