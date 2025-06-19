@@ -833,12 +833,6 @@ int ModApiEnv::l_find_node_near(lua_State *L)
 
 	int start_radius = (lua_isboolean(L, 4) && readParam<bool>(L, 4)) ? 0 : 1;
 
-#if CHECK_CLIENT_BUILD()
-	// Client API limitations
-	if (Client *client = getClient(L))
-		radius = client->CSMClampRadius(pos, radius);
-#endif
-
 	auto getNode = [&map] (v3s16 p) -> MapNode {
 		return map.getNode(p);
 	};
@@ -947,12 +941,6 @@ int ModApiEnv::l_find_nodes_near(lua_State *L)
 
 	int start_radius = (lua_isboolean(L, 4) && readParam<bool>(L, 4)) ? 0 : 1;
 
-#ifndef SERVER
-	// Client API limitations
-	if (Client *client = getClient(L))
-		radius = client->CSMClampRadius(pos, radius);
-#endif
-
 	std::vector<u32> individual_count;
 	individual_count.resize(filter.size());
 
@@ -996,12 +984,6 @@ int ModApiEnv::l_find_nodes_near_under_air(lua_State *L)
 	std::vector<content_t> filter;
 	collectNodeIds(L, 3, ndef, filter);
 	int start_radius = (lua_isboolean(L, 4) && readParam<bool>(L, 4)) ? 0 : 1;
-
-#ifndef SERVER
-	// Client API limitations
-	if (Client *client = getClient(L))
-		radius = client->CSMClampRadius(pos, radius);
-#endif
 
 	std::vector<u32> individual_count;
 	individual_count.resize(filter.size());
@@ -1047,12 +1029,6 @@ int ModApiEnv::l_find_nodes_in_area(lua_State *L)
 	const NodeDefManager *ndef = env->getGameDef()->ndef();
 	Map &map = env->getMap();
 
-#if CHECK_CLIENT_BUILD()
-	if (Client *client = getClient(L)) {
-		minp = client->CSMClampPos(minp);
-		maxp = client->CSMClampPos(maxp);
-	}
-#endif
 
 	checkArea(minp, maxp);
 
@@ -1109,12 +1085,6 @@ int ModApiEnv::l_find_nodes_in_area_under_air(lua_State *L)
 	const NodeDefManager *ndef = env->getGameDef()->ndef();
 	Map &map = env->getMap();
 
-#if CHECK_CLIENT_BUILD()
-	if (Client *client = getClient(L)) {
-		minp = client->CSMClampPos(minp);
-		maxp = client->CSMClampPos(maxp);
-	}
-#endif
 
 	checkArea(minp, maxp);
 
@@ -1142,11 +1112,6 @@ int ModApiEnv::l_find_nodes_near_under_air_except(lua_State *L)
 	collectNodeIds(L, 3, ndef, filter);
 	int start_radius = (lua_isboolean(L, 4) && readParam<bool>(L, 4)) ? 0 : 1;
 
-#ifndef SERVER
-	// Client API limitations
-	if (Client *client = getClient(L))
-		radius = client->CSMClampRadius(pos, radius);
-#endif
 	
 	std::vector<u32> individual_count;
 	individual_count.resize(filter.size());

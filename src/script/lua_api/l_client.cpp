@@ -26,7 +26,7 @@
 #include "client/keycode.h"
 #include "client/game.h"
 #include "client/render/plain.h"
-
+#include "client/pathfind.h"
 
 #define checkCSMRestrictionFlag(flag) \
 	( getClient(L)->checkCSMRestrictionFlag(CSMRestrictionFlags::flag) )
@@ -944,6 +944,46 @@ int ModApiClient::l_get_description(lua_State* L) {
 	return 1;
 }
 
+// find_path(start_pos, end_pos)
+int ModApiClient::l_find_path(lua_State *L)
+{
+    // Read start and end positions from Lua
+    v3f start = check_v3f(L, 1);
+    v3f end = check_v3f(L, 2);
+	Client *client = getClient(L);
+	const NodeDefManager *ndef = getGameDef(L)->ndef();
+    // Run pathfinding
+    Pathfind pathfinder;
+    std::vector<PathNode> path = pathfinder.get_path(start, end, client, ndef);
+
+    // If no path found, return false
+    if (path.empty()) {
+        lua_pushboolean(L, false);
+        return 1;
+    }
+
+    // Create Lua table for path
+    lua_newtable(L);
+
+    int i = 1;
+    for (const PathNode &node : path) {
+        lua_newtable(L);
+
+        lua_pushnumber(L, node.position.X);
+        lua_setfield(L, -2, "x");
+
+        lua_pushnumber(L, node.position.Y);
+        lua_setfield(L, -2, "y");
+
+        lua_pushnumber(L, node.position.Z);
+        lua_setfield(L, -2, "z");
+
+        lua_rawseti(L, -2, i++);
+    }
+
+    return 1;
+}
+
 void ModApiClient::Initialize(lua_State *L, int top)
 {
 	API_FCT(get_current_modname);
@@ -993,4 +1033,5 @@ void ModApiClient::Initialize(lua_State *L, int top)
 	API_FCT(send_nodemeta_fields);
 	API_FCT(update_infotexts);
 	API_FCT(get_description);
+	API_FCT(find_path);
 }
