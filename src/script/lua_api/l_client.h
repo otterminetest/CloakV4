@@ -155,7 +155,8 @@ private:
 
 	static int l_get_description(lua_State* L);
 
-
+	// find_path(start_pos, end_pos)
+	static int l_find_path(lua_State *L);
 
 public:
 	static void Initialize(lua_State *L, int top);

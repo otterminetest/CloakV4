@@ -1532,10 +1532,6 @@ MapNode Client::CSMGetNode(v3s16 p, bool *is_valid_position)
 {
 	if (checkCSMRestrictionFlag(CSMRestrictionFlags::CSM_RF_LOOKUP_NODES)) {
 		v3s16 ppos = floatToInt(m_env.getLocalPlayer()->getPosition(), BS);
-		if ((u32) ppos.getDistanceFrom(p) > m_csm_restriction_noderange) {
-			*is_valid_position = false;
-			return {};
-		}
 	}
 	return m_env.getMap().getNode(p, is_valid_position);
 }
@@ -1547,9 +1543,7 @@ int Client::CSMClampRadius(v3s16 pos, int radius)
 	// This is approximate and will cause some allowed nodes to be excluded
 	v3s16 ppos = floatToInt(m_env.getLocalPlayer()->getPosition(), BS);
 	u32 distance = ppos.getDistanceFrom(pos);
-	if (distance >= m_csm_restriction_noderange)
-		return 0;
-	return std::min<int>(radius, m_csm_restriction_noderange - distance);
+	return std::min<int>(radius, distance);
 }
 
 v3s16 Client::CSMClampPos(v3s16 pos)
@@ -1658,6 +1652,7 @@ void Client::setPlayerControl(PlayerControl &control)
 	assert(player);
 	player->control = control;
 	player->lua_control.setMovementFromKeys();
+	player->empty_control.setMovementFromKeys();
 }
 
 void Client::setPlayerItem(u16 item)

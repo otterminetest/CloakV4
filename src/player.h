@@ -152,10 +152,7 @@ public:
 	DISABLE_CLASS_COPY(Player);
 
 	// in BS-space
-	inline void setSpeed(v3f speed)
-	{
-		m_speed = speed;
-	}
+	void setSpeed(v3f speed);
 
 	// in BS-space
 	v3f getSpeed() const { return m_speed; }
@@ -201,6 +198,7 @@ public:
 
 	PlayerControl control;
 	PlayerControl lua_control;
+	PlayerControl empty_control;
 	PlayerControl& getPlayerControl();
 
 	PlayerPhysicsOverride physics_override;
