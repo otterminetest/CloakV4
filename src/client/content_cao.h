@@ -249,6 +249,7 @@ public:
 	void clearChildAttachments() override;
 	void addAttachmentChild(object_t child_id) override;
 	void removeAttachmentChild(object_t child_id) override;
+	int getParentId() const { return m_attachment_parent_id; }
 	ClientActiveObject *getParent() const override;
 	const std::unordered_set<object_t> &getAttachmentChildIds() const override
 	{ return m_attachment_child_ids; }
@@ -296,6 +297,8 @@ public:
 
 	bool directReportPunch(v3f dir, const ItemStack *punchitem,
 			const ItemStack *hand_item, float time_from_last_punch=1000000) override;
+			
+	bool canAttack(int threshold = 100);
 
 	std::string debugInfoText() override;
 
@@ -307,4 +310,6 @@ public:
 	void updateMeshCulling();
 
 	std::vector<std::string> nametag_images = {};	
+
+	float m_waiting_for_reattach;
 };
