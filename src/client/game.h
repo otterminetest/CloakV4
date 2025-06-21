@@ -663,6 +663,8 @@ protected:
 	void toggleBlockBounds();
 	void toggleAutoforward();
 	void toggleFreecam();
+	void toggleKillaura();
+	void toggleAutoaim();
 
 	void toggleMinimap(bool shift_pressed);
 	void toggleFog();
