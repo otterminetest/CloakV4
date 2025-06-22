@@ -665,6 +665,7 @@ protected:
 	void toggleFreecam();
 	void toggleKillaura();
 	void toggleAutoaim();
+	void toggleScaffold();
 
 	void toggleMinimap(bool shift_pressed);
 	void toggleFog();

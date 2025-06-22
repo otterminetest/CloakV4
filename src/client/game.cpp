@@ -1224,6 +1224,8 @@ if (g_settings->getBool("use_old_menu")) {
 		toggleKillaura();
 	} else if (wasKeyDown(KeyType::AUTOAIM)) {
 		toggleAutoaim();
+	} else if (wasKeyDown(KeyType::SCAFFOLD)) {
+		toggleScaffold();
 #if USE_SOUND
 	} else if (wasKeyDown(KeyType::MUTE)) {
 		bool new_mute_sound = !g_settings->getBool("mute_sound");
@@ -1514,6 +1516,18 @@ void Game::toggleAutoaim()
 		m_game_ui->showTranslatedStatusText("AutoAim enabled");
 	} else {
 		m_game_ui->showTranslatedStatusText("AutoAim disabled");
+	}
+}
+
+void Game::toggleScaffold()
+{
+	bool scaffold = ! g_settings->getBool("scaffold");
+	g_settings->set("scaffold", bool_to_cstr(scaffold));
+
+	if (scaffold) {
+		m_game_ui->showTranslatedStatusText("Scaffold enabled");
+	} else {
+		m_game_ui->showTranslatedStatusText("Scaffold disabled");
 	}
 }
 
