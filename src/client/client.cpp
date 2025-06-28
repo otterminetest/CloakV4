@@ -1530,16 +1530,11 @@ void Client::removeNode(v3s16 p)
  */
 MapNode Client::CSMGetNode(v3s16 p, bool *is_valid_position)
 {
-	if (checkCSMRestrictionFlag(CSMRestrictionFlags::CSM_RF_LOOKUP_NODES)) {
-		v3s16 ppos = floatToInt(m_env.getLocalPlayer()->getPosition(), BS);
-	}
 	return m_env.getMap().getNode(p, is_valid_position);
 }
 
 int Client::CSMClampRadius(v3s16 pos, int radius)
 {
-	if (!checkCSMRestrictionFlag(CSMRestrictionFlags::CSM_RF_LOOKUP_NODES))
-		return radius;
 	// This is approximate and will cause some allowed nodes to be excluded
 	v3s16 ppos = floatToInt(m_env.getLocalPlayer()->getPosition(), BS);
 	u32 distance = ppos.getDistanceFrom(pos);
@@ -1548,8 +1543,6 @@ int Client::CSMClampRadius(v3s16 pos, int radius)
 
 v3s16 Client::CSMClampPos(v3s16 pos)
 {
-	if (!checkCSMRestrictionFlag(CSMRestrictionFlags::CSM_RF_LOOKUP_NODES))
-		return pos;
 	v3s16 ppos = floatToInt(m_env.getLocalPlayer()->getPosition(), BS);
 	const int range = m_csm_restriction_noderange;
 	return v3s16(
