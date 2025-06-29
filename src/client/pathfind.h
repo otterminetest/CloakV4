@@ -23,5 +23,5 @@ public:
 class Pathfind {
 public:
     Pathfind();
-	std::vector<PathNode> get_path(v3f start, v3f end, Client *client, const NodeDefManager *ndef, int max_depth = 100000);
+	std::vector<PathNode> get_path(v3f start, v3f end, Client *client, const NodeDefManager *ndef, int max_depth = 10000, bool debug = false);
 };
