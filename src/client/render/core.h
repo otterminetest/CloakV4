@@ -8,6 +8,7 @@
 #include "irr_v2d.h"
 #include <SColor.h>
 #include "pipeline.h"
+#include "script/lua_api/l_cheats.h"
 
 namespace irr
 {
@@ -47,8 +48,14 @@ public:
 
 	void draw(video::SColor _skycolor, bool _show_hud,
 			bool _draw_wield_tool, bool _draw_crosshair);
+	void drawCombatTargetHUD();
 
 	ShadowRenderer *get_shadow_renderer() { return shadow_renderer; };
 
 	v2u32 getVirtualSize() const;
+
+	static u16 combat_target;
+	static video::SColor target_esp_color;
+
+	static std::map<std::string, std::vector<int>> ESPplayersNames;
 };
