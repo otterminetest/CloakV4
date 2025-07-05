@@ -35,11 +35,11 @@ local function buttonhandler(this, fields)
 	if fields.reconfigure then
 		close_dialog(this)
 
-		local maintab = ui.find_by_name("maintab")
+		local mainmenu = ui.find_by_name("mainmenu")
 
 		local dlg = create_settings_dlg("controls_keyboard_and_mouse")
-		dlg:set_parent(maintab)
-		maintab:hide()
+		dlg:set_parent(mainmenu)
+		mainmenu:hide()
 		dlg:show()
 
 		return true
