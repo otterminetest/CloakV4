@@ -3494,7 +3494,7 @@ void Game::drawScene(ProfilerGraph *graph, RunStats *stats, float dtime)
 		draw_crosshair = false;
 
 	this->m_rendering_engine->draw_scene(sky_color, this->m_game_ui->m_flags.show_hud,
-			draw_wield_tool, draw_crosshair);
+			draw_wield_tool, draw_crosshair, dtime);
 
 	/*
 		Profiler graph
@@ -3516,7 +3516,9 @@ void Game::drawScene(ProfilerGraph *graph, RunStats *stats, float dtime)
 		}
 	}
 
-
+	if (g_settings->getBool("enable_health_esp")) {	
+		client->getCamera()->drawHealthESP(dtime);
+	}
 	/*
 		Damage flash
 	*/
