@@ -98,11 +98,11 @@ function migrate_keybindings()
 		return
 	end
 
-	local maintab = ui.find_by_name("maintab")
+	local mainmenu = ui.find_by_name("mainmenu")
 
 	local dlg = create_rebind_keys_dlg()
-	dlg:set_parent(maintab)
-	maintab:hide()
+	dlg:set_parent(mainmenu)
+	mainmenu:hide()
 	dlg:show()
 	ui.update()
 end
