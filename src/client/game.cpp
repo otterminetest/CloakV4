@@ -212,7 +212,8 @@ bool Game::startup(bool *kill,
 	m_rendering_engine->initialize(client, hud);
 
 	m_game_formspec.init(client, m_rendering_engine, input);
-
+	
+	client->stop_running_menu = false;
 	return true;
 }
 
@@ -348,6 +349,7 @@ void Game::run()
 void Game::shutdown()
 {
 	// Delete text and menus first
+	client->stop_running_menu = true;
 	m_game_ui->clearText();
 	m_game_formspec.reset();
 	DrawTaskBlocksAndTracers::clearAllTasks();
