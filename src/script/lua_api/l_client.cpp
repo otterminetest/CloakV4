@@ -1035,6 +1035,38 @@ int ModApiClient::l_find_path(lua_State *L)
     return 1;
 }
 
+// load_media(filename)   Load a media file (model/image/sound/font) from a path
+int ModApiClient::l_load_media(lua_State *L)
+{
+	const char *filename = luaL_checkstring(L, 1);
+
+	std::string fullpath = porting::path_user + DIR_DELIM + "textures" + DIR_DELIM + "custom_assets" +  DIR_DELIM + filename;
+	
+	std::ifstream f(fullpath, std::ios::binary);
+
+	if (!f.good()) {
+		lua_pushboolean(L, false);
+		lua_pushstring(L, "File not found");
+		return 2;
+	}
+
+	std::ostringstream buffer;
+	buffer << f.rdbuf();
+	std::string data = buffer.str();
+
+	Client *client = getClient(L);
+	bool success = client->loadMedia(data, filename, false);
+
+	lua_pushboolean(L, success);
+	if (!success)
+		lua_pushstring(L, "Failed to load file");
+	else
+		lua_pushnil(L);
+
+	return 2;
+}
+
+
 void ModApiClient::Initialize(lua_State *L, int top)
 {
 	API_FCT(get_current_modname);
@@ -1087,4 +1119,5 @@ void ModApiClient::Initialize(lua_State *L, int top)
 	API_FCT(update_infotexts);
 	API_FCT(get_description);
 	API_FCT(find_path);
+	API_FCT(load_media);
 }

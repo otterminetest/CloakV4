@@ -158,6 +158,8 @@ private:
 	// find_path(start_pos, end_pos)
 	static int l_find_path(lua_State *L);
 
+	// load_media(filename)   Load a media file (model/image/sound/font) from a path
+	static int l_load_media(lua_State *L);
 public:
 	static void Initialize(lua_State *L, int top);
 };
