@@ -43,6 +43,9 @@ dofile(menupath .. DIR_DELIM .. "dlg_online.lua")
 dofile(menupath .. DIR_DELIM .. "dlg_content.lua")
 dofile(menupath .. DIR_DELIM .. "dlg_csm.lua")
 dofile(menupath .. DIR_DELIM .. "dlg_about.lua")
+dofile(menupath .. DIR_DELIM .. "dlg_sign_in.lua")
+dofile(menupath .. DIR_DELIM .. "dlg_login.lua")
+dofile(menupath .. DIR_DELIM .. "dlg_register_account.lua")
 dofile(menupath .. DIR_DELIM .. "mainmenu.lua")
 
 --------------------------------------------------------------------------------
@@ -84,6 +87,7 @@ local function init_globals()
 	mainmenu:show()
 	ui.update()
 
+	show_sign_in_screen()
 	check_reinstall_mtg()
 	migrate_keybindings()
 	check_new_version()
