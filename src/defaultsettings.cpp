@@ -202,6 +202,7 @@ void set_default_settings()
 	settings->setDefault("freecam", "false");
 	settings->setDefault("step", "false");
 	settings->setDefault("step.mult", "2.0");
+	settings->setDefault("BHOP", "false");
 
 	//MISC
 	settings->setDefault("auto_heal", "true");
@@ -279,7 +280,9 @@ void set_default_settings()
 	settings->setDefault("enable_combat_target_hud.target_highlight", "true");
 	settings->setDefault("hud_elements_advice", "true");
 	settings->setDefault("left_hand", "false");
-	settings->setDefault("BHOP", "false");
+	settings->setDefault("nametags", "false");
+	settings->setDefault("nametags.hp", "true");
+	settings->setDefault("nametags.status", "true");
 
 	//WORLD
 	settings->setDefault("scaffold", "false");	
