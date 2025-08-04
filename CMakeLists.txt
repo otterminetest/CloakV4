@@ -11,9 +11,9 @@ set(CLANG_MINIMUM_VERSION "7.0.1")
 
 # You should not need to edit these manually, use util/bump_version.sh
 set(VERSION_MAJOR 5)
-set(VERSION_MINOR 9)
-set(VERSION_PATCH 1)
-set(VERSION_EXTRA "" CACHE STRING "Stuff to append to version string")
+set(VERSION_MINOR 14)
+set(VERSION_PATCH 0)
+set(VERSION_EXTRA "")
 
 # Change to false for releases
 set(DEVELOPMENT_BUILD FALSE)
@@ -23,11 +23,6 @@ if(VERSION_EXTRA)
 	set(VERSION_STRING "${VERSION_STRING}-${VERSION_EXTRA}")
 elseif(DEVELOPMENT_BUILD)
 	set(VERSION_STRING "${VERSION_STRING}-dev")
-endif()
-
-if (CMAKE_BUILD_TYPE STREQUAL Debug)
-	# Append "-debug" to version string
-	set(VERSION_STRING "${VERSION_STRING}-debug")
 endif()
 
 # Configuration options
