@@ -305,7 +305,18 @@ local function main_button_handler(dlgview, fields, name, tabdata_etc)
 			else
 				core.settings:set("declared_version_extra", "")
 			end
+
+			if profile.declared_platform_name then
+				core.settings:set("declared_platform_name", profile.declared_platform_name)
+			else
+				core.settings:set("declared_platform_name", "")
+			end
 			
+			if profile.multicraft_compatibility ~= nil then
+				core.settings:set("multicraft_compatibility", tostring(profile.multicraft_compatibility))
+			else
+				core.settings:set("multicraft_compatibility", "false")
+			end
 		end
 	end
 

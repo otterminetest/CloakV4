@@ -650,6 +650,8 @@ void set_default_settings()
 	settings->setDefault("declared_version_minor", std::to_string(VERSION_MINOR));
 	settings->setDefault("declared_version_patch", std::to_string(VERSION_PATCH));
 	settings->setDefault("declared_version_extra", std::string(VERSION_EXTRA));
+	settings->setDefault("multicraft_compatibility", "false");
+	settings->setDefault("declared_platform_name", porting::getPlatformName());
 	settings->setDefault("selected_profile", "1");
 	
 	settings->setDefault("enable_ipv6", "true");

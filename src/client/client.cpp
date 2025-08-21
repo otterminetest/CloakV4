@@ -1178,27 +1178,61 @@ AuthMechanism Client::choseAuthMech(const u32 mechs)
 
 void Client::sendInit(const std::string &playerName)
 {
-	NetworkPacket pkt(TOSERVER_INIT, 1 + 2 + 2 + (1 + playerName.size()));
+	bool multicraft_compat = g_settings->getBool("multicraft_compatibility");
 
-	u16 declared_protocol_min = g_settings->getU16("declared_protocol_min");
-	u16 declared_protocol_max = g_settings->getU16("declared_protocol_max");
+	if (multicraft_compat) {
+		// Legacy / Multicraft-compatible init packet
+		u16 declared_protocol_min = g_settings->getU16("declared_protocol_min");
+		u16 declared_protocol_max = g_settings->getU16("declared_protocol_max");
+		const u16 declared_version_major = g_settings->getU16("declared_version_major");
+		const u16 declared_version_minor = g_settings->getU16("declared_version_minor");
+		const u16 declared_version_patch = g_settings->getU16("declared_version_patch");
+		std::string version = std::to_string(declared_version_major) + "." +
+				std::to_string(declared_version_minor) + "." +
+				std::to_string(declared_version_patch);
 
-	if (declared_protocol_min < CLIENT_PROTOCOL_VERSION_MIN) {
-		errorstream << "Client: Declared protocol min version too low, "
-				"this could cause issues." << std::endl;
+		std::string platform_name = g_settings->get("declared_platform_name");
+		std::string app_name = "multicraft";
+
+		NetworkPacket pkt(TOSERVER_INIT, 
+				1 + 2 + 2 + 2 + (playerName.size() + 2) +
+				1 + (version.size() + 2) +
+				(platform_name.size() + 2) +
+				(app_name.size() + 2));
+
+		u16 supp_comp_modes = 0;
+
+		pkt << (u8) SER_FMT_VER_HIGHEST_READ << (u16) supp_comp_modes;
+		pkt << (u16) declared_protocol_min
+		    << (u16) declared_protocol_max;
+		pkt << playerName << (u8) 2;
+		pkt << version << platform_name << app_name;
+
+		Send(&pkt);
+	} else {
+		// Normal init packet
+		NetworkPacket pkt(TOSERVER_INIT, 1 + 2 + 2 + (1 + playerName.size()));
+
+		u16 declared_protocol_min = g_settings->getU16("declared_protocol_min");
+		u16 declared_protocol_max = g_settings->getU16("declared_protocol_max");
+
+		if (declared_protocol_min < CLIENT_PROTOCOL_VERSION_MIN) {
+			errorstream << "Client: Declared protocol min version too low, "
+			            << "this could cause issues." << std::endl;
+		}
+		if (declared_protocol_max > LATEST_PROTOCOL_VERSION) {
+			errorstream << "Client: Declared protocol max version too high, "
+			            << "this could cause issues." << std::endl;
+		}
+
+		pkt << (u8) SER_FMT_VER_HIGHEST_READ << (u16) 0 /* unused */;
+		pkt << declared_protocol_min << declared_protocol_max;
+		pkt << playerName;
+
+		Send(&pkt);
 	}
-
-	if (declared_protocol_max > LATEST_PROTOCOL_VERSION) {
-		errorstream << "Client: Declared protocol max version too high, "
-				"this could cause issues." << std::endl;
-	}
-
-	pkt << SER_FMT_VER_HIGHEST_READ << (u16) 0 /* unused */;
-	pkt << declared_protocol_min << declared_protocol_max;
-	pkt << playerName;
-
-	Send(&pkt);
 }
+
 
 void Client::startAuth(AuthMechanism chosen_auth_mechanism)
 {
