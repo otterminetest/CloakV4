@@ -653,6 +653,7 @@ void set_default_settings()
 	settings->setDefault("multicraft_compatibility", "false");
 	settings->setDefault("declared_platform_name", porting::getPlatformName());
 	settings->setDefault("selected_profile", "1");
+	settings->setDefault("announce_join", "true");
 	
 	settings->setDefault("enable_ipv6", "true");
 	settings->setDefault("ipv6_server", "true");

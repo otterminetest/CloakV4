@@ -68,14 +68,18 @@ local function get_formspec(dlgview, name, tabdata_etc)
 	local dropdown_options = table.concat(profile_names, ",")
 
 	local selected_index = tonumber(core.settings:get("selected_profile"))
-
+	local announce_join = tostring(core.settings:get_bool("announce_join"))
 	local retval =
 		-- Main container and back
-		"size[16.5,8.1,true]" .. "field[0.54,0.54;6,0.75;te_search;;" .. core.formspec_escape(tabdata.search_for) .. "]" ..
-		"button[0.25,7.1;4.25,0.8;back;" .. fgettext("Back") .. "]" ..
+		"size[16.5,9.1,true]" .. "field[0.54,0.54;6,0.75;te_search;;" .. core.formspec_escape(tabdata.search_for) .. "]" ..
+		"button[0.25,8.4;4.25,0.8;back;" .. fgettext("Back") .. "]" ..
+		
+		-- announce join checkbox
+		"checkbox[0.25,7.43;announce_join;Show other CloakV4 users you joined;" .. announce_join .. "]" .. 
+		"tooltip[announce_join;Tell the TeamAcedia server you connected, only works when signed in.]" ..
 
 		-- Personality profile selector
-		"dropdown[4.58,7.1;4.25,0.8;profile_dropdown;" ..
+		"dropdown[4.58,8.4;4.25,0.8;profile_dropdown;" ..
 		dropdown_options .. ";" ..
 		selected_index .. ";true]" ..
 
@@ -103,10 +107,10 @@ local function get_formspec(dlgview, name, tabdata_etc)
 
 		-- Description Background
 		"label[2.75,1.6;" .. fgettext("Server Description") .. "]" ..
-		"box[0.25,2.1;7.15,3.7;#999999]"..
+		"box[0.25,3.1;7.15,3.7;#999999]"..
 
 		-- Name / Password
-		"container[0,6.25]" ..
+		"container[0,7.25]" ..
 		"label[0.25,0;" .. fgettext("Name") .. ":]" ..
 		"label[3.7,0;" .. fgettext("Password") .. ":]" ..
 		"field[1.4,0.22;2.625,0.75;te_name;;" .. core.formspec_escape(core.settings:get("name")) .. "]" ..
@@ -114,10 +118,10 @@ local function get_formspec(dlgview, name, tabdata_etc)
 		"container_end[]" ..
 
 		-- Connect
-		"button[4,7.15;3.5,0.75;btn_mp_login;" .. fgettext("Login") .. "]"
+		"button[4,8.4;3.8,0.8;btn_mp_login;" .. fgettext("Login") .. "]"
 
 	if core.settings:get_bool("enable_split_login_register") then
-		retval = retval .. "button[0.35,7.15;3.5,0.75;btn_mp_register;" .. fgettext("Register") .. "]"
+		retval = retval .. "button[0.0,8.4;3.8,0.8;btn_mp_register;" .. fgettext("Register") .. "]"
 	end
 
 	if tabdata.selected then
@@ -162,7 +166,7 @@ local function get_formspec(dlgview, name, tabdata_etc)
 		"align=inline,padding=0.25,width=1.5;" ..
 		"color,align=inline,span=1;" ..
 		"text,align=inline,padding=1]" ..
-		"table[0.25,1;8.25,5.8;servers;"
+		"table[0.25,1;8.25,6.3;servers;"
 
 	local servers = get_sorted_servers()
 
@@ -465,6 +469,10 @@ local function main_button_handler(dlgview, fields, name, tabdata_etc)
 		dlgview:hide()
 		dlg:show()
 		return true
+	end
+
+	if fields.announce_join then
+		core.settings:set("announce_join", fields.announce_join)
 	end
 
 	return false

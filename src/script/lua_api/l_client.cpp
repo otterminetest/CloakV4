@@ -290,6 +290,8 @@ int ModApiClient::l_get_server_info(lua_State *L)
 	Client *client = getClient(L);
 	Address serverAddress = client->getServerAddress();
 	lua_newtable(L);
+	lua_pushstring(L, client->getPlayerName().c_str());
+	lua_setfield(L, -2, "playername");
 	lua_pushstring(L, client->getAddressName().c_str());
 	lua_setfield(L, -2, "address");
 	lua_pushstring(L, serverAddress.serializeString().c_str());

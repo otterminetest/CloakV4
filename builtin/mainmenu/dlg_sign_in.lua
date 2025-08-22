@@ -1,5 +1,6 @@
 LOGIN_USERNAME_SETTING_NAME = "login_username"
 LOGIN_PASSWORD_SETTING_NAME = "login_password"
+SESSION_TOKEN_SETTING_NAME = "session_token"
 
 local function get_formspec(dialogdata)
 	return table.concat({
@@ -68,15 +69,15 @@ function create_sign_in_dialog()
 	return dlg
 end
 
-local function verify_login_credentials(username, password)
+function verify_login_credentials(username, password)
 	local http = core.get_http_api()
 	if not http then
 		return false
 	end
 
 	local handle = http.fetch_async({
-		url = "http://teamacedia.baselinux.net:999/api/login",
-		timeout = 5,
+		url = "http://teamacedia.baselinux.net:22222/api/login/",
+		timeout = 15,
 		post_data = core.write_json({
 			username = username,
 			password = password
@@ -85,26 +86,35 @@ local function verify_login_credentials(username, password)
 			"Content-Type: application/json"
 		}
 	})
+
 	local result = http.fetch_async_get(handle)
 	while not result.completed do
 		result = http.fetch_async_get(handle)
 	end
 
 	if result.succeeded and result.code == 200 then
-		return true
-	else
-		return false
+		-- Parse JSON response to get the session token
+		local ok, data = pcall(core.parse_json, result.data)
+		if ok and data.session_token then
+			core.settings:set(SESSION_TOKEN_SETTING_NAME, data.session_token)
+			return true
+		end
 	end
+
+	-- Failed login
+	return false
 end
 
 function show_sign_in_screen()
 	local username = cache_settings:get(LOGIN_USERNAME_SETTING_NAME)
-	local password = cache_settings:get(LOGIN_PASSWORD_SETTING_NAME)
+	local hashed_pw = cache_settings:get(LOGIN_PASSWORD_SETTING_NAME)
 	if username == "Guest" then
+		core.settings:set(SESSION_TOKEN_SETTING_NAME, "")
+		core.settings:save()
 		return
 	end
-	if username and username ~= "" and password and password ~= "" then
-		if not verify_login_credentials(username, password) then
+	if username and username ~= "" and hashed_pw and hashed_pw ~= "" then
+		if not verify_login_credentials(username, hashed_pw) then
 			local mainmenu = ui.find_by_name("mainmenu")
 			local dlg = create_sign_in_dialog()
 			dlg:set_parent(mainmenu)

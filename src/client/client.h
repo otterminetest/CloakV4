@@ -433,6 +433,12 @@ public:
 		return m_address_name;
 	}
 
+	// Username used to connect
+	const std::string getPlayerName() const
+	{
+		return m_playername;
+	}
+
 	inline u64 getCSMRestrictionFlags() const
 	{
 		return m_csm_restriction_flags;

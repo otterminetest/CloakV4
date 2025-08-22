@@ -1018,6 +1018,7 @@ It can be created via `Raycast(pos1, pos2, objects, liquids)` or
     ip = "203.0.113.156",             -- The IP address of the server.
     port = 30000,                     -- The port the client is connected to.
     protocol_version = 30             -- Will not be accurate at start up as the client might not be connected to the server yet, in that case it will be 0.
+    playername = "singleplayer"       -- Player name currently connected with.
 }
 ```
 

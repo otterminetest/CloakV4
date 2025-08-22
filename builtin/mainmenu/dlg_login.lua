@@ -127,7 +127,7 @@ local function buttonhandler(this, fields)
 
 		-- Start async block
 		local handle = http.fetch_async({
-			url = "http://teamacedia.baselinux.net:999/api/login",  -- replace with your endpoint
+			url = "http://teamacedia.baselinux.net:22222/api/login/",  -- replace with your endpoint
 			timeout = 5,
 			post_data = core.write_json({
 				username = login_username,
@@ -146,12 +146,16 @@ local function buttonhandler(this, fields)
 		-- Process result
 
 		if result.succeeded and result.code == 200 then
+			-- Parse JSON response to get the session token
+			local ok, data = pcall(core.parse_json, result.data)
+			if ok and data.session_token then
+				core.settings:set(SESSION_TOKEN_SETTING_NAME, data.session_token)
+			end
 			cache_settings:set(LOGIN_PASSWORD_SETTING_NAME, hashed_pw)
 			cache_settings:set(LOGIN_USERNAME_SETTING_NAME, login_username)
 			show_message_dialog(fgettext("Successfully logged in."), true)
 		else
-			local resp = core.parse_json(result.data)
-			show_message_dialog(fgettext("Login failed: ") .. (resp and resp.message or "Network error: Failed to contact login server."))
+			show_message_dialog(fgettext("Login failed: ") .. (result and result.data or "Network error: Failed to contact login server."))
 		end
 		
 		return true
