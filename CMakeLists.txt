@@ -149,7 +149,7 @@ if(WIN32)
 	set(EXAMPLE_CONF_DIR ".")
 	set(LOCALEDIR "locale")
 elseif(APPLE)
-	set(BUNDLE_NAME ${PROJECT_NAME}.app)
+	set(BUNDLE_NAME  luanti.app) # try this
 	set(BUNDLE_PATH "${BUNDLE_NAME}")
 	set(BINDIR ${BUNDLE_NAME}/Contents/MacOS)
 	set(SHAREDIR ${BUNDLE_NAME}/Contents/Resources)
