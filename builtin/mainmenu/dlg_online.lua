@@ -107,7 +107,7 @@ local function get_formspec(dlgview, name, tabdata_etc)
 
 		-- Description Background
 		"label[2.75,1.6;" .. fgettext("Server Description") .. "]" ..
-		"box[0.25,3.1;7.15,3.7;#999999]"..
+		"box[0.25,2.1;7.15,4.7;#999999]"..
 
 		-- Name / Password
 		"container[0,7.25]" ..
