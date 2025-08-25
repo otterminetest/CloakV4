@@ -110,7 +110,6 @@ function show_sign_in_screen()
 	local hashed_pw = cache_settings:get(LOGIN_PASSWORD_SETTING_NAME)
 	if username == "Guest" then
 		core.settings:set(SESSION_TOKEN_SETTING_NAME, "")
-		core.settings:save()
 		return
 	end
 	if username and username ~= "" and hashed_pw and hashed_pw ~= "" then
