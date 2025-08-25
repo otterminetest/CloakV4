@@ -98,7 +98,6 @@ public:
 		static std::vector<TestBase *> m_modules_to_test;
 		return m_modules_to_test;
 	}
-
 	static void registerTestModule(TestBase *module)
 	{
 		getTestModules().push_back(module);
@@ -114,4 +113,5 @@ extern content_t t_CONTENT_LAVA;
 extern content_t t_CONTENT_BRICK;
 
 bool run_tests();
+void list_all_test_modules();
 bool run_tests(const std::string &module_name);

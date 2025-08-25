@@ -39,8 +39,8 @@ public:
 
 
 
-	IWritableItemDefManager *getWritableItemDefManager() { return m_itemdef; }
-	NodeDefManager *getWritableNodeDefManager() { return m_nodedef; }
+	IWritableItemDefManager *getWritableItemDefManager() { return m_writeable_itemdef; }
+	NodeDefManager *getWritableNodeDefManager() { return m_nodedef_manager; }
 
 
 	void defineSomeNodes();
@@ -54,8 +54,8 @@ public:
 	}
 
 private:
-	IWritableItemDefManager *m_itemdef = nullptr;
-	NodeDefManager *m_nodedef = nullptr;
+	IWritableItemDefManager *m_writeable_itemdef = nullptr;
+	NodeDefManager *m_nodedef_manager = nullptr;
 
 	std::unique_ptr<ModChannelMgr> m_modchannel_mgr;
 };
@@ -274,6 +274,16 @@ static TestBase *findTestModule(const std::string &module_name) {
 	}
 	return nullptr;
 }
+
+void list_all_test_modules() {
+	std::vector<TestBase *> &testmods = TestManager::getTestModules();
+	std::cout << "Available test modules (" << testmods.size() << "):" << std::endl;
+	for (auto *testmod : testmods) {
+		if (testmod)
+			std::cout << " - " << testmod->getName() << std::endl;
+	}
+}
+
 
 bool run_tests(const std::string &module_name)
 {

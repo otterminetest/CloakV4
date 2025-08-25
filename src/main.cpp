@@ -210,6 +210,20 @@ int main(int argc, char *argv[])
 	if (g_settings->getBool("enable_console"))
 		porting::attachOrCreateConsole();
 
+	// Print unit test modules
+	if (cmd_args.getFlag("print-unittest-modules")) {
+		porting::attachOrCreateConsole();
+#if BUILD_UNITTESTS
+		list_all_test_modules();
+		return 1;
+#else
+		errorstream << "Unittest support is not enabled in this binary. "
+			<< "If you want to enable it, compile project with BUILD_UNITTESTS=1 flag."
+			<< std::endl;
+		return 1;
+#endif
+	}
+
 	// Run unit tests
 	if (cmd_args.getFlag("run-unittests")) {
 		porting::attachOrCreateConsole();
@@ -335,6 +349,8 @@ static void set_allowed_options(OptionList *allowed_options)
 			_("Load configuration from specified file"))));
 	allowed_options->insert(std::make_pair("port", ValueSpec(VALUETYPE_STRING,
 			_("Set network port (UDP)"))));
+	allowed_options->insert(std::make_pair("print-unittest-modules", ValueSpec(VALUETYPE_FLAG,
+			_("Print a list of valid unit test modules and exit"))));
 	allowed_options->insert(std::make_pair("run-unittests", ValueSpec(VALUETYPE_FLAG,
 			_("Run unit tests and exit"))));
 	allowed_options->insert(std::make_pair("run-benchmarks", ValueSpec(VALUETYPE_FLAG,
