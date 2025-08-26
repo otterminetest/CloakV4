@@ -44,7 +44,8 @@ local client_core_developers = {
 	"Maintainer_ (FoxLoveFire) <ivanskatov672@gmail.com> [Core Developer]",
 	"Astra0081X [Core Developer]",
 	"Pl608 [Developer]",
-	"Burrowing_Owl [Contributor]"
+	"Burrowing_Owl [Contributor]",
+	"GabrielOMG [Linux build]"
 }
 
 local core_developers = {
