@@ -10,6 +10,15 @@ CloakUsers = {}
 
 if session_token == "" or session_token == nil then return end
 
+function is_user_on_cloakv4(joined_name_to_check)
+    for _, user in ipairs(CloakUsers) do
+        if user.joined_name == joined_name_to_check then
+            return true
+        end
+    end
+    return false
+end
+
 local function announce_join(username, server_address, server_port)
 	core.log("action", username)
 	local http = get_http_api()
@@ -115,11 +124,23 @@ ws.on_connect(function()
 		local server_port = tostring(server_info.port)
 
 		announce_join(username, server_address, server_port)
-
-		fetch_cloak_users(server_address, server_port) -- Maybe this should run even if announce_join_and_leave is false but that would technically still tell the backend you are interested in that server so I'll avoid it for now.
 		
 		core.register_on_shutdown(function()
 			announce_leave(username, server_address, server_port)
 		end)
 	end
+
+	local update_interval = 5
+	local timer = 4 -- Only wait 1 second the first time
+
+	core.register_globalstep(function(dtime)
+		timer = timer + dtime
+		if timer < update_interval then return end
+		timer = 0
+
+		local server_info = core.get_server_info()
+		local server_address = server_info.ip
+		local server_port = tostring(server_info.port)
+		fetch_cloak_users(server_address, server_port)
+	end)
 end)

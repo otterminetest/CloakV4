@@ -1,47 +1,49 @@
-
 core.load_media("custom_character.b3d")
 core.load_media("empty.png")
 core.load_media("cape.png")
+core.load_media("crown_cape.png")
 
-local update_interval = 0.25
+local update_interval = 0.1
 local timer = 0
-local updated_once = false
+local frame = 0
+local frame_count = 10
+local original_textures = {}
+local original_meshes = {}
 
 core.register_globalstep(function(dtime)
-	if true then return end
-	if updated_once then return end
+    timer = timer + dtime
+    if timer < update_interval then return end
+    timer = 0
 
-	timer = timer + dtime
-	if timer >= update_interval then
-		timer = 0
+	local objects = core.get_nearby_objects(100)
+	for _, obj in ipairs(objects) do
+		if obj:is_player() and is_user_on_cloakv4(obj:get_name()) then
 
-		if core.localplayer then
-			local obj = core.localplayer:get_object()
-			if obj then
-				local props = obj:get_properties()
-				local current_textures = props.textures or {}
-				local current_texture = current_textures[1] or "character.png"
-				local overlay_texture = "cape.png"
-				local combined_texture = current_texture .. "^" .. overlay_texture
+			local cape_id = "crown" -- allow custom capes soon
 
-				-- Preserve texture slots 2–4 if already set
-				local t2 = current_textures[2] or "empty.png"
-				local t3 = current_textures[3] or "empty.png"
-				local t4 = current_textures[4] or "empty.png"
+			local frame_tex = cape_id .. "_cape.png\\^[verticalframe\\:"..frame_count.."\\:"..frame
 
-				obj:set_properties({
-					textures = {
-						combined_texture,
-						t2,
-						t3,
-						t4,
-					},
-					mesh = "custom_character.b3d",
-				})
+			local placed_frame = "[combine:160x80:140,48="..frame_tex
 
-				-- Only update once
-				updated_once = true
+			local overlay_texture = "cape.png^"..placed_frame
+
+			local props = obj:get_properties()
+			local current_textures = props.textures or {}
+			if original_textures[obj:get_name()] == nil then
+				original_textures[obj:get_name()] = current_textures[1] or "character.png"
+				original_meshes[obj:get_name()] = props.mesh
 			end
+			obj:set_properties({
+				textures = {
+					original_textures[obj:get_name()] .. "^" .. overlay_texture,
+					current_textures[2] or "empty.png",
+					current_textures[3] or "empty.png",
+					current_textures[4] or "empty.png",
+				},
+				mesh = "custom_character.b3d",
+			})
 		end
 	end
+    -- Loop through frames
+    frame = (frame + 1) % frame_count
 end)
