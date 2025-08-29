@@ -93,11 +93,12 @@ local function fetch_cloak_users(server_address, server_port)
 		}
 	})
 
-	-- Poll until the request completes
-	local result = http.fetch_async_get(handle)
-	while not result.completed do
-		result = http.fetch_async_get(handle)
-	end
+	local function check_result()
+		local result = http.fetch_async_get(handle)
+		if not result.completed then
+			minetest.after(0.1, check_result)
+			return
+		end
 
 	if result.succeeded and result.code == 200 then
 		local ok, data = pcall(core.parse_json, result.data)
@@ -112,8 +113,10 @@ local function fetch_cloak_users(server_address, server_port)
 					username = p.username
 				})
 			end
+			end
 		end
 	end
+	check_result()
 end
 
 ws.on_connect(function()
