@@ -96,23 +96,23 @@ local function fetch_cloak_users(server_address, server_port)
 	local function check_result()
 		local result = http.fetch_async_get(handle)
 		if not result.completed then
-			minetest.after(0.1, check_result)
+			minetest.after(0.25, check_result)
 			return
 		end
 
-	if result.succeeded and result.code == 200 then
-		local ok, data = pcall(core.parse_json, result.data)
-		if ok and data.players then
-			-- Clear previous data
-			CloakUsers = {}
+		if result.succeeded and result.code == 200 then
+			local ok, data = pcall(core.parse_json, result.data)
+			if ok and data.players then
+				-- Clear previous data
+				CloakUsers = {}
 
-			-- Save each player in the table
-			for _, p in ipairs(data.players) do
-				table.insert(CloakUsers, {
-					joined_name = p.joined_name,
-					username = p.username
-				})
-			end
+				-- Save each player in the table
+				for _, p in ipairs(data.players) do
+					table.insert(CloakUsers, {
+						joined_name = p.joined_name,
+						username = p.username
+					})
+				end
 			end
 		end
 	end
