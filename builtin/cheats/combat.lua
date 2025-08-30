@@ -5,10 +5,10 @@ core.register_cheat_setting("Target Mode", "Combat", "killaura", "targeting.targ
 core.register_cheat_setting("Target Type", "Combat", "killaura", "targeting.target_type", {type="selectionbox", options={"Players", "Entities", "Both"}})
 core.register_cheat_setting("Distance", "Combat", "killaura", "targeting.distance", {type="slider_int", min=1, max=10, steps=10})
 core.register_cheat_setting("Enemies Only", "Combat", "killaura", "targeting.enemies_only", {type="bool"})
-core.register_cheat_setting("Line Of Sight", "Combat", "killaura", "killaura.lineofsight", {type="bool"})
+core.register_cheat_setting("Through walls", "Combat", "killaura", "killaura.throughwalls", {type="bool"})
 core.register_cheat_setting("Assist", "Combat", "killaura", "killaura.assist", {type="bool"})
 core.register_cheat_setting("Many Punches", "Combat", "killaura", "killaura.manypunches", {type="bool"})
-core.register_cheat_setting("NoFlag", "Combat", "killaura", "killaura.noflag", {type="bool"})
+core.register_cheat_setting("Mode", "Combat", "killaura", "killaura.mode", {type="selectionbox", options={"Blatant", "Silent"}})
 core.register_cheat_setting("Fake aiming time", "Combat", "killaura", "killaura.simtime", {type="bool"})
 
 -------------- Auto Aim -----------------
@@ -133,7 +133,7 @@ local time_aimed_at_target = 0
 local target_aimed_at = nil
 
 core.get_send_pitch = function(pitch)
-	if core.settings:get_bool("killaura") and core.settings:get_bool("killaura.noflag") and killaura_target then
+	if core.settings:get_bool("killaura") and core.settings:get("killaura.mode") == "Silent" and killaura_target then
 		local target_pos = killaura_target:get_pos()
 		local player_pos = core.localplayer:get_pos()
 		local direction = vector.direction(player_pos, target_pos)
@@ -144,7 +144,7 @@ core.get_send_pitch = function(pitch)
 end
 
 core.get_send_yaw = function(yaw)
-	if core.settings:get_bool("killaura") and core.settings:get_bool("killaura.noflag") and killaura_target then
+	if core.settings:get_bool("killaura") and core.settings:get("killaura.mode") == "Silent" and killaura_target then
 		local target_pos = killaura_target:get_pos()
 		local player_pos = core.localplayer:get_pos()
 		local direction = vector.direction(player_pos, target_pos)
@@ -180,7 +180,7 @@ core.get_send_speed = function(critspeed)
 end
 
 core.get_send_controls = function(controls)
-	if core.settings:get_bool("killaura") and core.settings:get_bool("killaura.noflag") and killaura_target then
+	if core.settings:get_bool("killaura") and core.settings:get("killaura.mode") == "Silent" and killaura_target then
 		controls.dig = true
 	end
 	return controls
@@ -262,14 +262,10 @@ core.register_globalstep(function(dtime)
 	local r, g, b = get_sine_color(total_time)
 	core.set_target_esp_color({r = r, g = g, b = b})
 	if core.settings:get_bool("killaura") then
-		if core.settings:get_bool("killaura.noflag") then
-			core.update_infotext("Killaura", "Combat", "killaura", "NoFlag")
+		if core.settings:get("killaura.mode") == "Silent" then
+			core.update_infotext("Killaura", "Combat", "killaura", "Silent")
 		else
-			local target_mode = core.settings:get("targeting.target_mode")
-			local mode_text = target_mode and target_mode:gsub(" HP", "") or "Unknown"
-		
-			local target_description = core.settings:get("targeting.target_type")
-			core.update_infotext("Killaura", "Combat", "killaura", string.format("%s, %s", mode_text, target_description))
+			core.update_infotext("Killaura", "Combat", "killaura", "Blatant")
 		end
 	end
 
@@ -320,15 +316,15 @@ core.register_globalstep(function(dtime)
 
 	if target_enemy and (core.settings:get_bool("killaura")) then
 		killaura_target = target_enemy
-		-- if using killaura.noflag then wait atleast 0.5 seconds to start attacking after simulating aiming at target and pressing attack
-		if (core.settings:get_bool("killaura.noflag") and core.settings:get_bool("killaura.simtime") and time_aimed_at_target < 0.5) or (core.settings:get_bool("killaura.noflag") and target_aimed_at ~= target_enemy:get_id()) then
+		-- if using killaura silent mode then wait atleast 0.5 seconds to start attacking after simulating aiming at target and pressing attack
+		if (core.settings:get("killaura.mode") == "Silent" and core.settings:get_bool("killaura.simtime") and time_aimed_at_target < 0.5) or (core.settings:get("killaura.mode") == "Silent" and target_aimed_at ~= target_enemy:get_id()) then
 			return
 		end
 		local interval = get_punch_interval(player)
 
 		if player:get_time_from_last_punch() > interval or core.settings:get_bool("killaura.manypunches") then
 		
-			if (core.settings:get_bool("killaura.lineofsight") and target_enemy ) then
+			if (not core.settings:get_bool("killaura.throughwalls") and target_enemy) then
 			
 				local pos = truncate_pos(player:get_pos())
 				local enemy_pos = truncate_pos(target_enemy:get_pos())

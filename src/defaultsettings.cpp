@@ -163,11 +163,11 @@ void set_default_settings()
 	settings->setDefault("float_above_parent", "false");
 	settings->setDefault("critical_hits", "false");
 	settings->setDefault("killaura", "false");
-	settings->setDefault("killaura.lineofsight", "false");
+	settings->setDefault("killaura.throughwalls", "false");
 	settings->setDefault("killaura.assist", "false");
 	settings->setDefault("killaura.manypunches", "false");
 	settings->setDefault("killaura.doubletap", "false"); // not used
-	settings->setDefault("killaura.noflag", "true"); // we should probably leave this on, just in case
+	settings->setDefault("killaura.mode", "Silent"); // we should probably leave this on, just in case
 	settings->setDefault("killaura.simtime", "false");
 	settings->setDefault("autoaim", "false");
 	settings->setDefault("autoaim.y_offset", "5");
