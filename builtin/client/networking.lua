@@ -8,8 +8,6 @@ local session_token = core.settings:get(SESSION_TOKEN_SETTING_NAME)
 
 CloakUsers = {}
 
-if session_token == "" or session_token == nil then return end
-
 function is_user_on_cloakv4(joined_name_to_check)
     for _, user in ipairs(CloakUsers) do
         if user.joined_name == joined_name_to_check then
@@ -18,6 +16,8 @@ function is_user_on_cloakv4(joined_name_to_check)
     end
     return false
 end
+
+if session_token == "" or session_token == nil then return end
 
 local function announce_join(username, server_address, server_port)
 	core.log("action", username)
