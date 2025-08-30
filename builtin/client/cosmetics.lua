@@ -16,6 +16,8 @@ core.register_globalstep(function(dtime)
     timer = 0
 
 	local objects = core.get_nearby_objects(100)
+	if not objects then return end
+	
 	for _, obj in ipairs(objects) do
 		if obj:is_player() and is_user_on_cloakv4(obj:get_name()) then
 

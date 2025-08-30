@@ -167,7 +167,7 @@ void set_default_settings()
 	settings->setDefault("killaura.assist", "false");
 	settings->setDefault("killaura.manypunches", "false");
 	settings->setDefault("killaura.doubletap", "false"); // not used
-	settings->setDefault("killaura.mode", "Silent"); // we should probably leave this on, just in case
+	settings->setDefault("killaura.mode", "Silent");
 	settings->setDefault("killaura.simtime", "false");
 	settings->setDefault("autoaim", "false");
 	settings->setDefault("autoaim.y_offset", "5");
@@ -306,8 +306,10 @@ void set_default_settings()
 	//WORLD
 	settings->setDefault("scaffold", "false");	
 	settings->setDefault("scaffold.jump_delay", "0.5");
+	settings->setDefault("scaffold.mode", "Silent");
 	settings->setDefault("nodes_per_tick", "48");
 	settings->setDefault("scaffold_plus", "false");
+	settings->setDefault("scaffold_plus.mode", "Silent");
 	settings->setDefault("block_water", "false");
 	settings->setDefault("block_lava", "false");
 	settings->setDefault("autotnt", "false");

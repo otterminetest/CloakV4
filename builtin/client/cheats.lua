@@ -306,5 +306,22 @@ minetest.register_globalstep(function(dtime)
         elseif nametags_enabled then
             core.update_infotext("Nametags", "Render", "nametags", "")
         end
+
+		--Scaffold infotext
+		if core.settings:get_bool("scaffold") then
+			if core.settings:get("scaffold.mode") == "Silent" then
+				core.update_infotext("Scaffold", "World", "scaffold", "Silent")
+			else
+				core.update_infotext("Scaffold", "World", "scaffold", "Blatant")
+			end
+		end
+		--ScaffoldPlus infotext
+		if core.settings:get_bool("scaffold_plus") then
+			if core.settings:get("scaffold_plus.mode") == "Silent" then
+				core.update_infotext("ScaffoldPlus", "World", "scaffold_plus", "Silent")
+			else
+				core.update_infotext("ScaffoldPlus", "World", "scaffold_plus", "Blatant")
+			end
+		end
     end
 end)

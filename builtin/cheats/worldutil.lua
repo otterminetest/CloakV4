@@ -70,6 +70,12 @@ core.register_globalstep(function(dtime)
 			local p = vector.round(vector.add(pos, {x = 0, y = -0.6, z = 0}))
 			local node = core.get_node_or_nil(p)
 			if not node or core.get_node_def(node.name).buildable_to then
+				core.get_send_controls = function(controls)
+						if core.settings:get_bool("scaffold") and core.settings:get("scaffold.mode") == "Silent" then
+							controls.place = true
+						end
+					return controls
+				end
 				core.place_node(p)
 			end
 		end
@@ -98,8 +104,14 @@ core.register_globalstep(function(dtime)
 					if dist <= max_distance then
 						local node = core.get_node_or_nil(world_pos)
 						if node and node.name == "air" then
-							core.place_node(world_pos)
-							nodes_placed = nodes_placed + 1
+							core.get_send_controls = function(controls)
+								if core.settings:get_bool("scaffold_plus") and core.settings:get("scaffold_plus.mode") == "Silent" then
+									controls.place = true
+								end
+							return controls
+						end
+						core.place_node(world_pos)
+						nodes_placed = nodes_placed + 1
 						end
 
 						-- Add surrounding positions to the queue
@@ -125,6 +137,10 @@ core.register_globalstep(function(dtime)
 			local positions = core.find_nodes_near(pos, 5, {"mcl_core:water_source", "mcl_core:water_floating", "default:water_source", "default:water_flowing"}, true)
 			for i, p in pairs(positions) do
 				if i > nodes_per_tick then return end
+					core.get_send_controls = function(controls)
+						controls.place = true
+						return controls
+					end
 				core.place_node(p)
 			end
 		end
@@ -132,16 +148,24 @@ core.register_globalstep(function(dtime)
 			local positions = core.find_nodes_near(pos, 5, {"mcl_core:lava_source", "mcl_core:lava_floating", "default:lava_source", "default:lava_flowing"}, true)
 			for i, p in pairs(positions) do
 				if i > nodes_per_tick then return end
+					core.get_send_controls = function(controls)
+						controls.place = true
+						return controls
+					end
 				core.place_node(p)
 			end
 		end
-		if core.settings:get_bool("autotnt") then -- little modification here, autoTNT now will only work if the player is holding tnt
+		if core.settings:get_bool("autotnt") then
             core.switch_to_item("mcl_tnt:tnt") 
 			local positions = core.find_nodes_near_under_air_except(pos, 2, item:get_name(), true)
 			for i, p in pairs(positions) do
                 core.switch_to_item("mcl_tnt:tnt") 
 				if i > nodes_per_tick then return end
                     if core.switch_to_item("mcl_tnt:tnt") then
+						core.get_send_controls = function(controls)
+							controls.place = true
+							return controls
+						end
 				        core.place_node(vector.add(p, {x = 0, y = 1, z = 0}))
                     else end
 			end
@@ -170,8 +194,10 @@ end)
 
 core.register_cheat("Scaffold", "World", "scaffold")
 core.register_cheat_setting("Jump Delay", "World", "scaffold", "scaffold.jump_delay", {type="slider_float", min=0.0, max=0.8, steps=9})
+core.register_cheat_setting("Mode", "World", "scaffold", "scaffold.mode", {type="selectionbox", options={"Blatant", "Silent"}})
 core.register_cheat("ScaffoldPlus", "World", "scaffold_plus")
 core.register_cheat_setting("Jump Delay", "World", "scaffold_plus", "scaffold.jump_delay", {type="slider_float", min=0.0, max=0.8, steps=9})
+core.register_cheat_setting("Mode", "World", "scaffold_plus", "scaffold_plus.mode", {type="selectionbox", options={"Blatant", "Silent"}})
 core.register_cheat("BlockWater", "World", "block_water")
 core.register_cheat("BlockLava", "World", "block_lava")
 core.register_cheat("AutoTNT", "World", "autotnt")
