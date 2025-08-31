@@ -25,6 +25,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 #include "object_properties.h"
 #include "util/pointedthing.h"
 
+using object_t = u16;
+
 ClientActiveObject *ClientObjectRef::getClientActiveObject()
 {
 	return m_object;
@@ -64,6 +66,45 @@ int ClientObjectRef::l_get_pos(lua_State *L)
 	push_v3f(L, cao->getPosition() / BS);
 	return 1;
 }
+
+int ClientObjectRef::l_set_pos(lua_State *L)
+{
+    ClientObjectRef *ref = checkobject(L, 1);
+    ClientActiveObject *cao = get_cao(ref);
+    if (!cao)
+        return 0;
+
+    v3f pos = check_v3f(L, 2);
+    cao->setPosition(pos * BS);
+
+    return 0;
+}
+
+// set_attachment(self, parent_obj_id, parent_bone_name, position, rotation, force_visible)
+int ClientObjectRef::l_set_attachment(lua_State *L)
+{
+    ClientObjectRef *ref = checkobject(L, 1);
+    ClientActiveObject *cao = get_cao(ref);
+    if (!cao)
+        return 0;
+
+    object_t parent_id = (object_t)luaL_checkinteger(L, 2);
+
+    const char *bone_cstr = luaL_checkstring(L, 3);
+    std::string bone(bone_cstr);
+
+    v3f pos = check_v3f(L, 4) * BS;
+
+    v3f rot = check_v3f(L, 5);
+
+    bool force_visible = lua_toboolean(L, 6);
+
+    cao->setAttachment(parent_id, bone, pos, rot, force_visible);
+
+    return 0;
+}
+
+
 
 int ClientObjectRef::l_get_velocity(lua_State *L)
 {
@@ -286,6 +327,10 @@ ClientObjectRef::ClientObjectRef(ClientActiveObject *object) : m_object(object)
 
 void ClientObjectRef::create(lua_State *L, ClientActiveObject *object)
 {
+	if (!object) {
+        lua_pushnil(L);
+        return;
+    }
 	ClientObjectRef *o = new ClientObjectRef(object);
 	*(void **)(lua_newuserdata(L, sizeof(void *))) = o;
 	luaL_getmetatable(L, className);
@@ -337,7 +382,10 @@ void ClientObjectRef::Register(lua_State *L)
 }
 
 const char ClientObjectRef::className[] = "ClientObjectRef";
-luaL_Reg ClientObjectRef::methods[] = {luamethod(ClientObjectRef, get_pos),
+luaL_Reg ClientObjectRef::methods[] = {
+		luamethod(ClientObjectRef, get_pos),
+		luamethod(ClientObjectRef, set_pos),
+		luamethod(ClientObjectRef, set_attachment),
 		luamethod(ClientObjectRef, get_velocity),
 		luamethod(ClientObjectRef, get_acceleration),
 		luamethod(ClientObjectRef, get_rotation),

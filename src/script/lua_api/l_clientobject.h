@@ -52,6 +52,13 @@ private:
 	// get_pos(self)
 	// returns: {x=num, y=num, z=num}
 	static int l_get_pos(lua_State *L);
+	
+	// set_pos(self, pos)
+	// requires: {x=num, y=num, z=num}
+	static int l_set_pos(lua_State *L);
+
+	// set_attachment(self, parent_obj_id, parent_bone_name, position, rotation, force_visible)
+	static int l_set_attachment(lua_State *L);
 
 	// get_velocity(self)
 	static int l_get_velocity(lua_State *L);

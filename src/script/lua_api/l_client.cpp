@@ -4,7 +4,8 @@
 // Copyright (C) 2017 nerzhul, Loic Blot <loic.blot@unix-experience.fr>
 
 #include <iostream>
-
+#include <sstream>
+#include <string>
 #include "l_client.h"
 #include "chatmessage.h"
 #include "client/client.h"
@@ -27,6 +28,7 @@
 #include "client/game.h"
 #include "client/render/plain.h"
 #include "client/pathfind.h"
+#include <cstdint>
 
 #define checkCSMRestrictionFlag(flag) \
 	( getClient(L)->checkCSMRestrictionFlag(CSMRestrictionFlags::flag) )
@@ -724,6 +726,66 @@ int ModApiClient::l_get_all_objects(lua_State *L)
 	return 1;
 }
 
+// get_active_object(id)
+int ModApiClient::l_get_active_object(lua_State *L)
+{
+	u16 id = luaL_checknumber(L, 1);
+
+	ClientObjectRef::create(L, id);
+
+	return 1;
+}
+
+std::string makeGenericEntityInitData() {
+    // Raw string literal containing the init string for a generic entity mesh with the character.b3d mesh and character.png texture, this allows modification using object properties
+    static const char raw_data[] = 	R"("\u0001\u0000\u0011clientside:object\u0000\u0000\u0002Bi\u00eb\u0085A\u00a0\u0000\u0000\u00c2^=q\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\n\u0005\u0000\u0000\u0000\u00b8\u0000\u0004\u0000\n\u0000\u0000\u0000\u0000\u0000\u00bf\u0000\u0000\u0000\u00bf\u0000\u0000\u0000\u00bf\u0000\u0000\u0000?\u0000\u0000\u0000?\u0000\u0000\u0000?\u0000\u0000\u0000\u00bf\u0000\u0000\u0000\u00bf\u0000\u0000\u0000\u00bf\u0000\u0000\u0000?\u0000\u0000\u0000?\u0000\u0000\u0000?\u0000\u0000\u0000\u0000\u0000\u0004mesh?\u0080\u0000\u0000?\u0080\u0000\u0000?\u0080\u0000\u0000\u0000\u0001\u0000\rcharacter.png\u0000\u0001\u0000\u0001\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\rcharacter.b3d\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u00ff\u00ff\u00ff\u00ff\u00bf\u0080\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000?\u00d0\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\n^[brighten\u0001\u0000\u0000\u0001\u0001\u0001\u0000\u0000\u007f\u0000\u0000\u0000\u0000\u0000\r\u0005\u0000\u0001\u0000\u0006fleshy\u0000d\u0000\u0000\u0000\u0012\u0006\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u001e\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0003\u0002\u0000\u0000")";
+
+    std::string init_data(raw_data);
+
+    std::istringstream ss(init_data);
+    return deSerializeJsonString(ss);
+}
+
+
+// add_active_object()
+int ModApiClient::l_add_active_object(lua_State *L)
+{
+	ClientEnvironment &env = getClient(L)->getEnv();
+	u16 id = env.getAvailableClientObjectID();
+
+	std::string init_data = makeGenericEntityInitData();
+
+	std::unique_ptr<ClientActiveObject> obj = ClientActiveObject::create((ActiveObjectType) ACTIVEOBJECT_TYPE_GENERIC, getClient(L), &env);
+	if (!obj) {
+		infostream<<"ClientEnvironment::addActiveObject(): "
+			<<"id="<<id<<" type="<<ACTIVEOBJECT_TYPE_GENERIC<<": Couldn't create object"
+			<<std::endl;
+		lua_pushnil(L);
+		return 1;
+	}
+
+	try {
+		obj->initialize(init_data);
+		obj->setId(id);
+		obj->setPosition(v3f(0, 0, 0));
+	} catch(SerializationError &e) {
+		errorstream<<"ClientEnvironment::addActiveObject():"
+			<<" id="<<id<<" type="<<(ActiveObjectType) ACTIVEOBJECT_TYPE_GENERIC
+			<<": SerializationError in initialize(): "
+			<<e.what()
+			<<": init_data="<<serializeJsonString(init_data)
+			<<std::endl;
+		
+		lua_pushnil(L);
+		return 1;
+	}
+
+	u16 new_id = env.addActiveObject(std::move(obj));
+
+	lua_pushinteger(L, new_id);
+	return 1;
+}
+
 // make_screenshot()
 int ModApiClient::l_make_screenshot(lua_State *L)
 {
@@ -1104,6 +1166,8 @@ void ModApiClient::Initialize(lua_State *L, int top)
 	API_FCT(drop_selected_item);
 	API_FCT(get_objects_inside_radius);
 	API_FCT(get_all_objects);
+	API_FCT(get_active_object);
+	API_FCT(add_active_object);
 	API_FCT(make_screenshot);
 	API_FCT(all_loaded_nodes);
 	API_FCT(nodes_at_block_pos);

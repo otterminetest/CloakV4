@@ -114,6 +114,12 @@ private:
 	// get_all_objects(pos)
 	static int l_get_all_objects(lua_State *L);
 
+	// get_active_object(id)
+	static int l_get_active_object(lua_State *L);
+
+	// add_active_object()
+	static int l_add_active_object(lua_State *L);
+
 	// make_screenshot()
 	static int l_make_screenshot(lua_State *L);
 
