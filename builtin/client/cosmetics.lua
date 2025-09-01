@@ -123,6 +123,10 @@ core.register_globalstep(function(dtime)
 		local parent_obj = core.get_active_object(parent_id)
 		-- calculate cape rotation based on parent object movement
 		local parent_velocity = {}
+		if not parent_obj then
+			cape_data[parent_id] = nil
+			return
+		end
 		if parent_obj:is_local_player() then
 			parent_velocity = core.localplayer:get_velocity()
 		else

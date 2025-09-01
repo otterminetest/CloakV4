@@ -178,12 +178,15 @@ local function fetch_capes()
 end
 
 
-networking.get_selected_cape = function(username)
-	local joined_as_username = networking.get_user_account_name(username)
-	if networking.SelectedCapes[joined_as_username] ~= nil then
-		return networking.SelectedCapes[joined_as_username]
+networking.get_selected_cape = function(ingame_username)
+	local teamacedia_username = networking.get_user_account_name(ingame_username)
+	if teamacedia_username == false then
+		return "unknown"
+	end
+	if networking.SelectedCapes[teamacedia_username] ~= nil then
+		return networking.SelectedCapes[teamacedia_username]
 	else
-		networking.SelectedCapes[joined_as_username] = "unknown"
+		networking.SelectedCapes[teamacedia_username] = "unknown"
 		local http = get_http_api()
 		if not http then
 			return "unknown"
@@ -194,7 +197,7 @@ networking.get_selected_cape = function(username)
 			timeout = 15,
 			post_data = core.write_json({
 				token = session_token,
-				user = joined_as_username
+				user = teamacedia_username
 			}),
 			extra_headers = {
 				"Content-Type: application/json"
@@ -211,7 +214,7 @@ networking.get_selected_cape = function(username)
 			if result.succeeded and result.code == 200 then
 				local ok, data = pcall(core.parse_json, result.data)
 				if ok and type(data) == "table" then
-					networking.SelectedCapes[joined_as_username] = data.selected_cape
+					networking.SelectedCapes[teamacedia_username] = data.selected_cape
 				end
 			end
 		end
