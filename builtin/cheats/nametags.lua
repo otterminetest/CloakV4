@@ -2,6 +2,7 @@
 nametags = {}
 
 function nametags.update_nametag(obj)
+    if not obj then return end
     if obj:is_player() and not obj:is_local_player() then
         local props = obj:get_properties()
         if not props then return end

@@ -39,10 +39,12 @@ local function main_menu_formspec(this)
         "image_button[0,3;4,0.85;;csm;" .. fgettext("CSMs") .. "]",
         -- Content Button
         "image_button[0,4;4,0.85;;content;" .. fgettext("Content") .. "]",
+        -- Cosmetics Button
+        "image_button[0,5;4,0.85;;cosmetics;" .. fgettext("Cosmetics") .. "]",
         -- Settings Button
-        "image_button[0,5;4,0.85;;settings;" .. fgettext("Settings") .. "]",
+        "image_button[0,6;4,0.85;;settings;" .. fgettext("Settings") .. "]",
         -- About Button
-        "image_button[0,6;4,0.85;;about;" .. fgettext("About") .. "]",
+        "image_button[0,7;4,0.85;;about;" .. fgettext("About") .. "]",
         -- Header Image
         "image[0,0;4,0.8;" .. core.formspec_escape(defaulttexturedir .. "menu_header.png") .. "]",
 
@@ -93,6 +95,12 @@ local function main_menu_buttonhandler(this, fields)
         return true
     elseif fields.csm then
         local dlg = create_csm_dlg()
+		dlg:set_parent(this)
+		this:hide()
+		dlg:show()
+        return true
+    elseif fields.cosmetics then
+        local dlg = create_cosmetics_dlg()
 		dlg:set_parent(this)
 		this:hide()
 		dlg:show()

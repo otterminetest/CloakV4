@@ -162,38 +162,17 @@ local function register_buttonhandler(this, fields)
 			return true
 		end
 
-		local http = core.get_http_api()
-		if not http then
-			show_message_dialog(fgettext("HTTP API not available."))
-			return true
-		end
-
 		local hashed_pw = core.sha256(password)
 
-		local handle = http.fetch_async({
-			url = "http://teamacedia.baselinux.net:22222/api/register/",
-			timeout = 5,
-			post_data = core.write_json({
-				username = login_username,
-				password = hashed_pw
-			}),
-			extra_headers = {
-				"Content-Type: application/json"
-			}
-		})
+		local result = register_account(login_username, hashed_pw)
 
-		local result = http.fetch_async_get(handle)
-		while not result.completed do
-			result = http.fetch_async_get(handle)
-		end
-
-		if result.succeeded and result.code == 201 then
+		if result == true then
 			verify_login_credentials(login_username, hashed_pw)
 			cache_settings:set(LOGIN_PASSWORD_SETTING_NAME, hashed_pw)
 			cache_settings:set(LOGIN_USERNAME_SETTING_NAME, login_username)
 			show_message_dialog(fgettext("Account created successfully."), true)
 		else
-			show_message_dialog(fgettext("Registration failed: ") .. (result and result.data or "Network error: Failed to contact login server."))
+			show_message_dialog(fgettext("Registration failed: ") .. result)
 		end
 
 		return true

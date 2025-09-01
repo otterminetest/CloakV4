@@ -117,45 +117,14 @@ local function buttonhandler(this, fields)
 			return true
 		end
 
-		local http = core.get_http_api()
-		if not http then
-			show_message_dialog(fgettext("HTTP API not available."))
-			return true
-		end
-
 		local hashed_pw = core.sha256(password)
 
-		-- Start async block
-		local handle = http.fetch_async({
-			url = "http://teamacedia.baselinux.net:22222/api/login/",  -- replace with your endpoint
-			timeout = 5,
-			post_data = core.write_json({
-				username = login_username,
-				password = hashed_pw
-			}),
-			extra_headers = {
-				"Content-Type: application/json"
-			}
-		})
-		-- Poll until request completes
-		local result = http.fetch_async_get(handle)
-		while not result.completed do
-			result = http.fetch_async_get(handle)
-		end
+		local result = login_account(login_username, hashed_pw)
 
-		-- Process result
-
-		if result.succeeded and result.code == 200 then
-			-- Parse JSON response to get the session token
-			local ok, data = pcall(core.parse_json, result.data)
-			if ok and data.session_token then
-				core.settings:set(SESSION_TOKEN_SETTING_NAME, data.session_token)
-			end
-			cache_settings:set(LOGIN_PASSWORD_SETTING_NAME, hashed_pw)
-			cache_settings:set(LOGIN_USERNAME_SETTING_NAME, login_username)
+		if result == true then
 			show_message_dialog(fgettext("Successfully logged in."), true)
 		else
-			show_message_dialog(fgettext("Login failed: ") .. (result and result.data or "Network error: Failed to contact login server."))
+			show_message_dialog(fgettext("Login failed: ") .. result)
 		end
 		
 		return true
