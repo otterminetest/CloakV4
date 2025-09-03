@@ -100,22 +100,12 @@ jobs:
           cd build_xcode
           ../util/ci/build_xcode.sh
 
-      - name: Archive build_xcode
-        run: |
-          zip -r build_xcode.zip ./build_xcode
-          
-      - name: Upload build_xcode artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: build_xcode
-          path: build_xcode.zip
-
       - name: Tests
         run: |
           mkdir -p "${HOME}/Library/Application Support/minetest/games/"
           ln -s "${PWD}/games/devtest" "${HOME}/Library/Application Support/minetest/games/"
           ./build/macos/luanti.app/Contents/MacOS/cloakv4 --run-unittests
-          ./build_xcode/cloakv4.xcarchive/Products/Applications/luanti.app/Contents/MacOS/cloakv4 --run-unittests
+          ./build_xcode/cloakv4.xcarchive/Products/Applications/cloakv4.app/Contents/MacOS/cloakv4 --run-unittests
 
       - name: Diff Resources
         run: |
