@@ -56,7 +56,7 @@ jobs:
 
       - name: Test
         run: |
-          ./build/macos/luanti.app/Contents/MacOS/cloakv4 --run-unittests
+          ./build/macos/cloakv4.app/Contents/MacOS/cloakv4 --run-unittests
 
       - name: CPack
         run: |
@@ -67,7 +67,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: cloakv4-macos
+          name: cloakv4-macos-intel
           path: ./build/macos/*.zip
 
   build-arm-macos-xcode:
@@ -104,10 +104,25 @@ jobs:
         run: |
           mkdir -p "${HOME}/Library/Application Support/minetest/games/"
           ln -s "${PWD}/games/devtest" "${HOME}/Library/Application Support/minetest/games/"
-          ./build/macos/luanti.app/Contents/MacOS/cloakv4 --run-unittests
+          ./build/macos/cloakv4.app/Contents/MacOS/cloakv4 --run-unittests
           ./build_xcode/cloakv4.xcarchive/Products/Applications/cloakv4.app/Contents/MacOS/cloakv4 --run-unittests
 
       - name: Diff Resources
         run: |
-          diff -rd ./build/macos/luanti.app/Contents/Resources ./build_xcode/build/Release/cloakv4.app/Contents/Resources || exit 1
-          diff -rd ./build/macos/luanti.app/Contents/Resources ./build_xcode/cloakv4.xcarchive/Products/Applications/cloakv4.app/Contents/Resources || exit 1
+          diff -rd ./build/macos/cloakv4.app/Contents/Resources ./build_xcode/build/Release/cloakv4.app/Contents/Resources || exit 1
+          diff -rd ./build/macos/cloakv4.app/Contents/Resources ./build_xcode/cloakv4.xcarchive/Products/Applications/cloakv4.app/Contents/Resources || exit 1
+
+      - name: Create DMG (Unsigned)
+        run: |
+          cd build_xcode
+          mkdir -p dmg
+          hdiutil create -volname "CloakV4" \
+            -srcfolder ./cloakv4.xcarchive/Products/Applications/cloakv4.app \
+            -ov -format UDZO ./dmg/cloakv4.dmg
+          ls -lh ./dmg/
+
+      - name: Upload DMG Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloakv4-macos-arm
+          path: build_xcode/dmg/cloakv4.dmg
