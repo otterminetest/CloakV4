@@ -52,6 +52,20 @@ jobs:
             -DRUN_IN_PLACE=FALSE -DENABLE_GETTEXT=TRUE \
             -DINSTALL_DEVTEST=TRUE
           cmake --build . -j$(sysctl -n hw.logicalcpu)
+
+      - name: Archive build directory for debugging
+        run: |
+          cd build
+          zip -r build_artifacts.zip .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: debug-artifacts
+          path: ./build/build_artifacts.zip
+
+      - name: Run Install (where it fails)
+        run: |
+          cd build
           make install
 
       - name: Test
