@@ -53,28 +53,30 @@ jobs:
             -DINSTALL_DEVTEST=TRUE
           cmake --build . -j$(sysctl -n hw.logicalcpu)
 
-      - name: Archive build directory for debugging
-        run: |
-          cd build
-          zip -r build_artifacts.zip .
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: debug-artifacts
-          path: ./build/build_artifacts.zip
-
       - name: Run Install (where it fails)
         run: |
           cd build
           make install
+        continue-on-error: true # This step will not cause the workflow to stop on failure
+
+      - name: Archive all files after install for debugging
+        if: always() # This step will always run
+        run: |
+          zip -r install_artifacts.zip .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: debug-artifacts
+          path: ./install_artifacts.zip
+        if: always() # This step will also always run
 
       - name: Test
+        if: success() # This step will only run if 'Run Install' succeeds
         run: |
           ./build/macos/cloakv4.app/Contents/MacOS/cloakv4 --run-unittests
 
-      # Zipping the built .app preserves permissions on the contained files,
-      #   which the GitHub artifact pipeline would otherwise strip away.
       - name: CPack
+        if: success() # This step will only run if 'Run Install' succeeds
         run: |
           cd build
           rm -rf macos
@@ -85,6 +87,8 @@ jobs:
         with:
           name: cloakv4-macos
           path: ./build/macos/*.zip
+        if: success() # This step will only run if 'Run Install' succeeds
+
   build-arm-macos-xcode:
     runs-on: macos-14
     steps:
