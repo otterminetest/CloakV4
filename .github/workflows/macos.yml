@@ -110,4 +110,4 @@ jobs:
       - name: Diff Resources
         run: |
           diff -rd ./build/macos/luanti.app/Contents/Resources ./build_xcode/build/Release/luanti.app/Contents/Resources || exit 1
-          diff -rd ./build/macos/luanti.app/Contents/Resources ./build_xcode/cloakv4.xcarchive/Products/Applications/luanti.app/Contents/Resources || exit 1
+          diff -rd ./build/macos/luanti.app/Contents/Resources ./build_xcode/cloakv4.xcarchive/Products/Applications/cloakv4.app/Contents/Resources || exit 1
