@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
-	<string>luanti</string>
+	<string>cloakv4</string>
 	<key>CFBundleIconFile</key>
 	<string>luanti-icon.icns</string>
 	<key>CFBundleName</key>

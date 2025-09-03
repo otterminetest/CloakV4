@@ -53,7 +53,7 @@ jobs:
             -DINSTALL_DEVTEST=TRUE
           cmake --build . -j$(sysctl -n hw.logicalcpu)
 
-      - name: Run Install (where it fails)
+      - name: Run Install
         run: |
           cd build
           make install
