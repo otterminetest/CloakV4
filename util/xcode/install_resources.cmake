@@ -18,6 +18,16 @@ endif()
 
 execute_process(
 	COMMAND ${CMAKE_COMMAND} -E copy_directory
+	"$ENV{SOURCE_ROOT}/personality_profiles"
+	"${RESOURCES_DIR}/personality_profiles"
+)
+execute_process(
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+	"$ENV{SOURCE_ROOT}/themes"
+	"${RESOURCES_DIR}/themes"
+)
+execute_process(
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
 	"$ENV{SOURCE_ROOT}/builtin"
 	"${RESOURCES_DIR}/builtin"
 )
