@@ -112,17 +112,13 @@ jobs:
           diff -rd ./build/macos/cloakv4.app/Contents/Resources ./build_xcode/build/Release/cloakv4.app/Contents/Resources || exit 1
           diff -rd ./build/macos/cloakv4.app/Contents/Resources ./build_xcode/cloakv4.xcarchive/Products/Applications/cloakv4.app/Contents/Resources || exit 1
 
-      - name: Create DMG (Unsigned)
+      - name: Create Artifact
         run: |
           cd build_xcode
-          mkdir -p dmg
-          hdiutil create -volname "CloakV4" \
-            -srcfolder ./cloakv4.xcarchive/Products/Applications/cloakv4.app \
-            -ov -format UDZO ./dmg/cloakv4.dmg
-          ls -lh ./dmg/
+          cpack -G ZIP -B macos
 
-      - name: Upload DMG Artifact
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: cloakv4-macos-arm
-          path: build_xcode/dmg/cloakv4.dmg
+          path: build_xcode/zip/cloakv4.zip
