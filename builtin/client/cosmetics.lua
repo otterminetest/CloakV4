@@ -124,6 +124,7 @@ core.register_globalstep(function(dtime)
 		-- calculate cape rotation based on parent object movement
 		local parent_velocity = {}
 		if not parent_obj then
+			cape_obj:remove()
 			cape_data[parent_id] = nil
 			return
 		end
