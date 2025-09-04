@@ -32,6 +32,17 @@ networking.get_user_account_name = function(joined_name_to_check)
     return false
 end
 
+networking.delete_user_by_username = function(teamacedia_username)
+    for i, user in ipairs(networking.CloakUsers) do
+        if user.username == teamacedia_username then
+            table.remove(networking.CloakUsers, i)
+            return true
+        end
+    end
+    return false
+end
+
+
 if session_token == "" or session_token == nil then return end
 
 local function announce_join(username, server_address, server_port)
@@ -238,6 +249,15 @@ networking.get_cape_data = function(cape_id)
     return nil
 end
 
+networking.clear_player_cache = function(ingame_username)
+	local teamacedia_username = networking.get_user_account_name(ingame_username)
+	if teamacedia_username == false then
+		return false
+	else
+		networking.SelectedCapes[teamacedia_username] = nil
+		return networking.delete_user_by_username(teamacedia_username)
+	end
+end
 
 ws.on_connect(function()
 	if announce_join_and_leave then
@@ -266,4 +286,30 @@ ws.on_connect(function()
 		local server_port = tostring(server_info.port)
 		fetch_cloak_users(server_address, server_port)
 	end)
+end)
+
+local last_online_players = {}
+local leave_timer = 0
+
+core.register_globalstep(function(dtime)
+    leave_timer = leave_timer + dtime
+    if leave_timer < 1 then
+        return
+    end
+    leave_timer = 0
+
+    local current_players = core.get_player_names() or {}
+
+    local current_set = {}
+    for _, name in ipairs(current_players) do
+        current_set[name] = true
+    end
+
+    for name, _ in pairs(last_online_players) do
+        if not current_set[name] then
+            networking.clear_player_cache(name)
+        end
+    end
+
+    last_online_players = current_set
 end)
