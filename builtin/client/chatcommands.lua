@@ -100,8 +100,8 @@ core.register_chatcommand("dig", {
 core.register_chatcommand("break", {
 	description = "Toggle instant break on/off",
 	func = function()
-		local instant_break = minetest.settings:get_bool("instant_break")
-		minetest.settings:set_bool("instant_break", not instant_break)
+		local instant_break = core.settings:get_bool("instant_break")
+		core.settings:set_bool("instant_break", not instant_break)
 	end,
 })
 
@@ -161,3 +161,97 @@ core.register_player_list_command("enemy", "Configure Enemies.", "enemies")
 core.register_player_list_command("ally", "Configure Allies.", "allies")
 core.register_player_list_command("staff", "Configure Staff.", "staff")
 
+warp = {}
+
+local storage = core.get_mod_storage()
+
+function warp.set(warp, pos)
+	if warp == "" or not pos then return false, "Missing parameter." end
+	local posstr = core.pos_to_string(pos)
+	storage:set_string(warp, posstr)
+	return true, "Warp " .. warp .. " set to " .. posstr .. "."
+end
+
+function warp.set_here(param)
+	local success, message = warp.set(param, vector.round(core.localplayer:get_pos()))
+	return success, message
+end
+
+function warp.get(param)
+	if param == "" then return false, "Missing parameter." end
+	local pos = storage:get_string(param)
+	if pos == "" then return false, "Warp " .. param .. " not set." end
+	return true, "Warp " .. param .. " is set to " .. pos .. ".", core.string_to_pos(pos)
+end
+
+function warp.delete(param)
+	if param == "" then return false, "Missing parameter." end
+	storage:set_string(param, "")
+	return true, "Deleted warp " .. param .. "."
+end
+
+core.register_chatcommand("setwarp", {
+	params = "<warp>",
+	description = "Set a warp to your current position.",
+	func = warp.set_here,
+})
+
+core.register_chatcommand("readwarp", {
+	params = "<warp>",
+	description = "Print the coordinates of a warp.",
+	func = warp.get,
+})
+
+core.register_chatcommand("deletewarp", {
+	params = "<warp>",
+	description = "Delete a warp.",
+	func = warp.delete,
+})
+
+core.register_chatcommand("listwarps", {
+	description = "List all warps.",
+	func = function()
+		local warps = storage:to_table().fields
+		local warplist = {}
+		for warp in pairs(warps) do
+			table.insert(warplist, warp)
+		end
+		if #warplist > 0 then
+			return true, table.concat(warplist, ", ")
+		else
+			return false, "No warps set."
+		end
+	end,
+})
+
+local function do_warp(param)
+	if param == "" then return false, "Missing parameter." end
+	local success, pos = core.parse_pos(param)
+	if not success then
+		local msg
+		success, msg, pos = warp.get(param)
+		if not success then
+			return false, msg
+		end
+	end
+	core.localplayer:set_pos(pos)
+	return true, "Warped to " .. core.pos_to_string(pos)
+end
+
+core.register_chatcommand("warp", {
+	params = "<pos>|<warp>",
+	description = "Warp to a set warp or a position.",
+	func = do_warp
+})
+
+core.register_chatcommand("warpandexit", {
+	params = "<pos>|<warp>",
+	description = "Warp to a set warp or a position and exit.",
+	func = function(param)
+		local s, m = do_warp(param)
+		if s then
+			core.disconnect()
+		end
+		return s,m 
+	end
+})
