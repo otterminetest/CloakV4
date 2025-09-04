@@ -14,6 +14,7 @@ on:
       - '**/CMakeLists.txt'
       - 'cmake/Modules/**'
       - 'po/**.po'
+      - 'util/ci/**'
       - '.github/workflows/macos.yml'
   pull_request:
     paths:
@@ -27,6 +28,7 @@ on:
       - '**/CMakeLists.txt'
       - 'cmake/Modules/**'
       - 'po/**.po'
+      - 'util/ci/**'
       - '.github/workflows/macos.yml'
 
 jobs:
@@ -56,8 +58,6 @@ jobs:
         run: |
           ./build/macos/cloakv4.app/Contents/MacOS/cloakv4 --run-unittests
 
-      # Zipping the built .app preserves permissions on the contained files,
-      #   which the GitHub artifact pipeline would otherwise strip away.
       - name: CPack
         run: |
           cd build
@@ -67,8 +67,9 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: cloakv4-macos
+          name: cloakv4-macos-intel
           path: ./build/macos/*.zip
+
   build-arm-macos-xcode:
     runs-on: macos-14
     steps:
@@ -110,3 +111,14 @@ jobs:
         run: |
           diff -rd ./build/macos/cloakv4.app/Contents/Resources ./build_xcode/build/Release/cloakv4.app/Contents/Resources || exit 1
           diff -rd ./build/macos/cloakv4.app/Contents/Resources ./build_xcode/cloakv4.xcarchive/Products/Applications/cloakv4.app/Contents/Resources || exit 1
+
+      - name: Create Artifact
+        run: |
+          cd build_xcode
+          cpack -G ZIP -B macos
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloakv4-macos-arm
+          path: build_xcode/zip/cloakv4.zip

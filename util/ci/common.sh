@@ -27,6 +27,7 @@ install_linux_deps() {
 
 # macOS build only
 install_macos_deps() {
+	brew uninstall cmake
 	local pkgs=(
 		cmake gettext freetype gmp jpeg-turbo jsoncpp leveldb
 		libogg libpng libvorbis luajit zstd sdl2
