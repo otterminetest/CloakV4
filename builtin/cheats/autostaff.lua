@@ -20,7 +20,9 @@ core.register_on_receiving_chat_message(function(message)
     if not core.settings:get_bool("autostaff.warn_staff") then return end
 	local p = core.localplayer
 	if not p then return end
-    if p:get_name() == "singleplayer" then return end
+
+    local my_name = p:get_name()
+    if my_name == "singleplayer" then return end
     
     local cleaned_message = message
     :gsub("\27%(T@__builtin%)", "")
@@ -33,6 +35,9 @@ core.register_on_receiving_chat_message(function(message)
         if player_name then
             player_name = player_name:gsub(":$", "")
         end
+
+        if player_name == my_name then return end
+
         local privileges_part = string.match(cleaned_message, ":%s*(.*)")
 
         if privileges_part and player_name then
@@ -63,17 +68,19 @@ core.register_globalstep(function(dtime)
     qtime = qtime + dtime
     if qtime > 1 and core.settings:get_bool("autostaff") then
         qtime = 0
-	 local po = core.localplayer
-    	 if not po then return end
-         if po:get_name() == "singleplayer" then return end
-        -- Refresh player list only when queue is empty
+    local po = core.localplayer
+        if not po then return end
+
+        local my_name = po:get_name()
+        if my_name == "singleplayer" then return end
+
         if #player_queue == 0 then
             local current_players = core.get_player_names()
             if not current_players or #current_players == 0 then return end
 
             -- Add only new players to the queue
             for _, player in ipairs(current_players) do
-                if not last_players[player] then
+                if player ~= my_name and not last_players[player] then
                     table.insert(player_queue, player)
                 end
             end
