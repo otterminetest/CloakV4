@@ -235,6 +235,7 @@ void NewMenu::create()
         // Ensure "Appearance" cheat exists in Client category
         ScriptApiCheatsCheat *appearance_cheat = nullptr;
         ScriptApiCheatsCheat *grid = nullptr;
+        ScriptApiCheatsCheat *hints_cheat = nullptr;
 
         for (auto *cheat : client_category->m_cheats) {
             if (cheat && cheat->m_name == "Appearance") {
@@ -250,6 +251,13 @@ void NewMenu::create()
             }
         }
 
+        for (auto *cheat : client_category->m_cheats) {
+            if (cheat && cheat->m_name == "Hints") {
+                hints_cheat = cheat;
+                break;
+            }
+        }
+
         if (!appearance_cheat) {
             appearance_cheat = new ScriptApiCheatsCheat("Appearance", "appearance", "");
             client_category->m_cheats.push_back(appearance_cheat);
@@ -258,6 +266,11 @@ void NewMenu::create()
         if (!grid) {
             grid = new ScriptApiCheatsCheat("MenuGrid", "use_menu_grid", "");
             client_category->m_cheats.push_back(grid);
+        }
+
+        if (!hints_cheat) {
+            hints_cheat = new ScriptApiCheatsCheat("Hints", "use_hints", "");
+            client_category->m_cheats.push_back(hints_cheat);
         }
 
         // --- Ensure "Theme" setting exists or update it ---
@@ -1280,14 +1293,25 @@ void NewMenu::drawHints(video::IVideoDriver* driver, gui::IGUIFont* font, const 
                 core::dimension2d<s32> textSize_des(textSizeU32_des.Width, textSizeU32_des.Height);
                 const s32 padding = 8;
 
-                // Ensure background accounts for padding
-                s32 backgroundWidth = textSize_des.Width + 2 * padding;
-                s32 backgroundHeight = textSize_des.Height + 2 * padding;
+            core::dimension2d<u32> screenSize = driver->getScreenSize();
 
-                // Corrected centering using background width instead of text width
-                s32 backgroundX = cheatRects[i][cheat_index].UpperLeftCorner.X + 
-                                (cheatRects[i][cheat_index].getWidth() - backgroundWidth) / 2;
-                s32 backgroundY = cheatRects[i][cheat_index].LowerRightCorner.Y + padding / 2;
+            s32 backgroundWidth = textSize_des.Width + 2 * padding;
+            s32 backgroundHeight = textSize_des.Height + 2 * padding;
+
+            s32 backgroundX = cheatRects[i][cheat_index].UpperLeftCorner.X + 
+                            (cheatRects[i][cheat_index].getWidth() - backgroundWidth) / 2;
+            s32 backgroundY = cheatRects[i][cheat_index].LowerRightCorner.Y + padding / 2;
+
+            if (backgroundX < 0)
+                backgroundX = 0;
+            if (backgroundX + backgroundWidth > (s32)screenSize.Width)
+                backgroundX = screenSize.Width - backgroundWidth;
+
+            if (backgroundY + backgroundHeight > (s32)screenSize.Height)
+                backgroundY = screenSize.Height - backgroundHeight;
+
+            if (backgroundY < 0)
+               backgroundY = 0;
 
                 if (!wCheatDes.empty()) {
                     driver->draw2DRectangle(current_theme.secondary_muted, core::rect<s32>(backgroundX, backgroundY, backgroundX + backgroundWidth, backgroundY + backgroundHeight));

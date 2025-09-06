@@ -69,7 +69,6 @@ core.cheats = {
 		["AutoTool"] = "autotool",
     },
 	["Misc"] = {
-		["Hints"] = "use_hints",
 		["AutoStaff"] = "autostaff",
 		["AntiAFK"] = "anti_afk",
     }
@@ -174,11 +173,10 @@ core.register_cheat_description("Enderchest", "Misc", minetest.open_enderchest, 
 core.register_cheat_description("Hand", "Misc", minetest.open_handslot, "Open hand formspec in mcl/mcla")
 --Misc
 core.register_cheat_description("AntiAFK", "Misc", "anti_afk", "Prevent afk by moving")
-core.register_cheat_description("AutoStaff", "Misc", "autostaff", "Automatically check player privs and assign them as a staff.")
+core.register_cheat_description("AutoStaff", "Misc", "autostaff", "Automatically check player privs and assign them as a staff. WARNING: can be detected easily")
 core.register_cheat_setting("Warn Staff", "Misc", "autostaff", "autostaff.warn_staff", {type="bool"})
-core.register_cheat_description("AutoTeam", "Misc", "autoteam", "Sets allied players to your team in ctf")
+core.register_cheat_description("AutoTeam", "Misc", "autoteam", "Sets allied players to your team in ctf. It might require you to run /team in some servers")
 core.register_cheat_description("Panic", "Misc", "panic", "Disables all cheats")
-core.register_cheat_description("Hints", "Misc", "use_hints", "Enable cheat hints")
 core.register_cheat_description("Spammer", "Misc", "spammer", "Sends many chat messages")
 --Movement
 core.register_cheat_description("AirJump", "Movement", "airjump", "Jump on air")
@@ -218,7 +216,7 @@ core.register_cheat_description("EntityTracers", "Render", "enable_entity_tracer
 core.register_cheat_description("FullBright", "Render", "fullbright", "No darkness")
 core.register_cheat_description("Left hand", "Render", "left_hand", "Switch to left hand")
 core.register_cheat_description("Skybox", "Render", "custom_skybox", "Render custom skybox")
-
+core.register_cheat_description("FOV", "Render", "fov_setting", "Have your FOV set to a custom value")
 --core.register_cheat_description("HUDBypass", "Render", "hudbypass", "Allows player to toggle hud elements disabled by the game")
 core.register_cheat_description("HealthESP", "Render", "show_players_hp", "Shows player and entity HP")
 core.register_cheat_description("NoDrownCam", "Render", "no_drown_cam", "Disables drowning camera effect")
@@ -233,7 +231,7 @@ core.register_cheat_description("PlayerTracers", "Render", "enable_player_tracer
 core.register_cheat_description("Xray", "Render", "xray", "Don't render specific nodes")
 core.register_cheat_description("TargetHUD", "Render", "enable_combat_target_hud", "Shows best target on a HUD (depends on your combat settings)")
 core.register_cheat_description("DetachedCamera", "Render", "detached_camera", "Detaches what you're seeing from your actual camera")
-core.register_cheat_description("Nametags", "Render", "nametags", "Customize players nametags. Not recommended for CTF")
+core.register_cheat_description("Nametags", "Render", "nametags", "Customize players nametags. Doesn't work well in CTF")
 core.register_cheat_description("LeftHand", "Render", "left_hand", "Switch to left hand")
 --World
 core.register_cheat_description("AutoTNT", "World", "autotnt", "Puts TNT on the ground")
@@ -242,7 +240,6 @@ core.register_cheat_description("BlockWater", "World", "blockwater", "Replace wa
 core.register_cheat_description("Replace", "World", "replace", "When you break a block it gets replaced by the block you're holding")
 core.register_cheat_description("Scaffold", "World", "scaffold", "Puts blocks below you")
 core.register_cheat_description("ScaffoldPlus", "World", "scaffoldplus", "Puts even more blocks under you")
-
 
 
 --SOME SETTINGS
