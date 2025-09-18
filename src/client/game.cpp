@@ -348,6 +348,17 @@ void Game::run()
 
 void Game::shutdown()
 {
+	// Delete custom gui elements
+	if (new_menu) {
+		new_menu->remove();
+		new_menu = nullptr;
+	}
+
+	if (m_cheat_menu) {
+		delete m_cheat_menu;
+		m_cheat_menu = nullptr;
+	}
+
 	// Delete text and menus first
 	client->stop_running_menu = true;
 	m_game_ui->clearText();
