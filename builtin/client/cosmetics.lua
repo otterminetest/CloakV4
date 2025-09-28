@@ -18,7 +18,7 @@ end
 local function generate_texture_string(cape_id)
     local cape_data = networking.get_cape_data(cape_id)
     if not cape_data or not cape_data.CapeTexture then
-		core.log("error", "Using fallback texture")
+		-- core.log("error", "Using fallback texture")
         return "crown_cape.png^[verticalframe:" .. 10 .. ":" .. get_frame(frame_global, 10)
     else
         return "[png:" .. cape_data.CapeTexture .. "^[verticalframe:" .. cape_data.CapeAnimLength .. ":" .. get_frame(frame_global, cape_data.CapeAnimLength)

@@ -30,7 +30,7 @@ core.cheats = {
 		["NoFallDamage"] = "prevent_natural_damage",
 		["Reach"] = "reach",
 		["AutoRespawn"] = "autorespawn",
-		["LuaControl"] = "lua_control",
+	--	["LuaControl"] = "lua_control",
 		["NoForceRotate"] = "no_force_rotate",
 		["QuickMenu"] = "use_old_menu",
 		["NoViewBob"] = "nobob",
@@ -206,7 +206,7 @@ core.register_cheat_description("NoViewBob", "Player", "nobob", "Disable view bo
 core.register_cheat_description("PrivBypass", "Player", "priv_bypass", "Bypass fly, noclip, fast and wireframe rendering")
 core.register_cheat_description("QuickMenu", "Player", "use_old_menu", "Add a menu for quicker access to cheats")
 core.register_cheat_description("Reach", "Player", "reach", "Increase reach")
-core.register_cheat_description("LuaControl", "Player", "luacontrol", "The player moves regardless of the received input")
+-- core.register_cheat_description("LuaControl", "Player", "luacontrol", "The player moves regardless of the received input")
 --Render
 core.register_cheat_description("BrightNight", "Render", "no_night", "Always daytime")
 core.register_cheat_description("CheatHUD", "Render", "cheathud", "List enabled cheats")

@@ -75,8 +75,8 @@ local function get_formspec(dlgview, name, tabdata_etc)
 		"button[0.25,8.4;4.25,0.8;back;" .. fgettext("Back") .. "]" ..
 		
 		-- announce join checkbox
-		"checkbox[0.25,7.43;announce_join;Show other CloakV4 users you joined;" .. announce_join .. "]" .. 
-		"tooltip[announce_join;Tell the TeamAcedia server you connected, only works when signed in.]" ..
+		--"checkbox[0.25,7.43;announce_join;Show other CloakV4 users you joined;" .. announce_join .. "]" .. 
+		--"tooltip[announce_join;Tell the TeamAcedia server you connected, only works when signed in.]" ..
 
 		-- Personality profile selector
 		"dropdown[4.58,8.4;4.25,0.8;profile_dropdown;" ..

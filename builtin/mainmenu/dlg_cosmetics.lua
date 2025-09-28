@@ -1,5 +1,8 @@
 -- globals
-local capes_list, selected_cape_idx
+local capes_list, selected_cape_idx, selected_idx
+local useless_placeholder_setting = 0
+
+selected_idx = tonumber(core.settings:get("cosmetics_dropdown_idx")) or 3
 
 local cape_cache_dir = core.get_cache_path() .. DIR_DELIM .. "capes"
 assert(core.create_dir(cape_cache_dir))
@@ -47,23 +50,29 @@ local function get_formspec(dlgview, scroll_offset)
         for id, data in pairs(networking.Capes) do
             table.insert(capes_list, {
                 id = id,
-				full_id = data.CapeID,
+                full_id = data.CapeID,
                 texture = data.CapeTexture,
                 preview = data.CapePreview,
             })
-			if data.CapeID == networking.SelectedCape then
-				selected_cape_idx = id
-			end
+            if data.CapeID == networking.SelectedCape then
+                selected_cape_idx = id
+            end
         end
         table.sort(capes_list, function(a, b) return a.id < b.id end)
     end
 
-    local retval = "size[8.5,6,true]" ..
-                   "label[0.25,-0.1;Select a Cape]"
+    local retval = "size[8.5,7.5,true]"
 
     local start_x = 0.5
     local start_y = 0.8
     local x, y = start_x, start_y
+
+    local dropdown_options = {"Enabled","Disabled"}
+
+    local escaped_options = {}
+    for _, opt in ipairs(dropdown_options) do
+        table.insert(escaped_options, core.formspec_escape(opt))
+    end
 
     -- Only show a slice of the capes_list based on start_index
     local end_index = math.min(start_index + VISIBLE_CAPES - 1, #capes_list)
@@ -91,8 +100,8 @@ local function get_formspec(dlgview, scroll_offset)
 
         -- Advance x for next cape
         x = x + CAPE_WIDTH + GRID_PADDING
-    end
 
+        useless_placeholder_setting = 1
     -- Navigation buttons
     if start_index > 1 then
         retval = retval .. "button[0.2,5.5;2,1;prev;← Prev]"
@@ -101,8 +110,29 @@ local function get_formspec(dlgview, scroll_offset)
         retval = retval .. "button[6.2,5.5;2,1;next;Next →]"
     end
 
+
+    -- Disable/Enable dropdown
+    retval = retval .. "dropdown[4.7,0;3.5;enable_cosmetics;" ..
+    table.concat(escaped_options, ",") .. ";" .. selected_idx .. "]"
+
+    retval = retval ..
+		"container[0,3.5]" ..
+		"box[0,3;8.3,1;#cc5801]" ..
+		"textarea[0.5,3.1;8.3,1;;;It is recommended to not use capes in servers where you shouldn't be cheating, since other CloakV4 users may spot you]" ..
+		"container_end[]"
+
+    retval = retval .. "label[0.25,-0.1;Select a Cape]"
+    end
+
     -- Back button
     retval = retval .. "button[2.25,5.5;4,1;back;Back]"
+    if useless_placeholder_setting == 0 then
+        retval = retval ..
+	    	"container[0,-0.5]" ..
+	    	"box[2.1,3;4,2;#cc5801]" ..
+	    	"textarea[2.5,3.1;4,2.2;;;In order to use cosmetics, please log in. In case you're already logged in, you may have to close and open the client again to refresh this menu]" ..
+	    	"container_end[]"
+    end
 
     return retval
 end
@@ -137,9 +167,23 @@ local function handle_buttons(dlgview, fields)
         return true
     end
 
+    if fields.enable_cosmetics then
+            if fields.enable_cosmetics == "Enabled" then
+                selected_idx = 1
+                core.settings:set_bool("announce_join", true)
+            elseif fields.enable_cosmetics == "Disabled" then
+                selected_idx = 2
+                core.settings:set_bool("announce_join", false)
+            end
+
+            core.settings:set("cosmetics_dropdown_idx", tostring(selected_idx))
+        end
+
+
 
     return false
 end
+
 
 
 function create_cosmetics_dlg()

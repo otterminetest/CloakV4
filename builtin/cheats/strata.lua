@@ -310,14 +310,14 @@ Strata.set_controls = function(new_controls)
 		core.localplayer:set_lua_control(combined_controls)
 		Strata.last_controls = table.copy(combined_controls)
 		core.settings:set_bool("lua_control", true)
-		core.settings:set_bool("detached_camera", true)
+--	core.settings:set_bool("detached_camera", true)
 	end
 end
 
 Strata.clear_controls = function()
 	Strata.last_controls = {}
 	core.settings:set_bool("lua_control", false)
-	core.settings:set_bool("detached_camera", false)
+--	core.settings:set_bool("detached_camera", false)
 end
 
 Strata.position_equals = function(pos1, pos2)
