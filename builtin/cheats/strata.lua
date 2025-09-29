@@ -254,7 +254,7 @@ end
 
 
 
-
+--[[
 core.register_chatcommand("goto", {
 	params = "<x> <y> <z>",
 	description = "Find path from player to target position and visualize it",
@@ -280,6 +280,7 @@ core.register_chatcommand("goto", {
 		return true
 	end
 })
+]]--
 
 local update_interval = 1
 local timer = 0
@@ -529,6 +530,6 @@ core.register_globalstep(function(dtime)
 end)
 
 
-core.register_cheat("Strata", "Player", "strata")
+--core.register_cheat("Strata", "Player", "strata")
 
-core.register_cheat_description("Strata", "Player", "strata", "Automatic player movement and pathfinding to target coordinates using block placement and mining. ( use .goto )")
+--core.register_cheat_description("Strata", "Player", "strata", "Automatic player movement and pathfinding to target coordinates using block placement and mining. ( use .goto )")

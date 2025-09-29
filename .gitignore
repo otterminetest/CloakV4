@@ -146,3 +146,23 @@ personality_profiles/*
 # ignore the default profiles
 !/personality_profiles/default.profile
 !/personality_profiles/latest.profile
+!/personality_profiles/54.profile
+!/personality_profiles/54dev.profile
+!/personality_profiles/55.profile
+!/personality_profiles/55dev.profile
+!/personality_profiles/56.profile
+!/personality_profiles/56dev.profile
+!/personality_profiles/57.profile
+!/personality_profiles/57dev.profile
+!/personality_profiles/58.profile
+!/personality_profiles/58dev.profile
+!/personality_profiles/59.profile
+!/personality_profiles/59dev.profile
+!/personality_profiles/510.profile
+!/personality_profiles/510dev.profile
+!/personality_profiles/511.profile
+!/personality_profiles/511dev.profile
+!/personality_profiles/541.profile
+!/personality_profiles/551.profile
+!/personality_profiles/561.profile
+!/personality_profiles/591.profile
