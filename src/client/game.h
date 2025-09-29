@@ -667,6 +667,7 @@ protected:
 	void toggleAutoaim();
 	void toggleScaffold();
     void toggleBlink();
+	void toggleDetachedCamera();
 	
 	void toggleMinimap(bool shift_pressed);
 	void toggleFog();

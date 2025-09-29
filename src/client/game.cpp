@@ -1248,9 +1248,8 @@ if (g_settings->getBool("use_old_menu")) {
 		toggleScaffold();
 	} else if (wasKeyDown(KeyType::BLINK)) {
 		toggleBlink();
-	} else if (wasKeyDown(KeyType::LH)) {
-		bool p = g_settings->getBool("left_hand");
-		g_settings->setBool("left_hand", !p);
+	} else if (wasKeyDown(KeyType::DETACHEDCAMERA)) {
+		toggleDetachedCamera();
 #if USE_SOUND
 	} else if (wasKeyDown(KeyType::MUTE)) {
 		bool new_mute_sound = !g_settings->getBool("mute_sound");
@@ -1541,6 +1540,18 @@ void Game::toggleAutoaim()
 		m_game_ui->showTranslatedStatusText("AutoAim enabled");
 	} else {
 		m_game_ui->showTranslatedStatusText("AutoAim disabled");
+	}
+}
+
+void Game::toggleDetachedCamera()
+{
+	bool dcamera = ! g_settings->getBool("detached_camera");
+	g_settings->set("detached_camera", bool_to_cstr(dcamera));
+
+	if (dcamera) {
+		m_game_ui->showTranslatedStatusText("DetachedCamera enabled");
+	} else {
+		m_game_ui->showTranslatedStatusText("DetachedCamera disabled");
 	}
 }
 
@@ -2710,12 +2721,14 @@ PointedThing Game::updatePointedThing(
 
 	runData.selected_object = NULL;
 	hud->pointing_at_object = false;
+	g_settings->setBool("tbot_is_attacking", false);
 
 	RaycastState s(shootline, look_for_object, liquids_pointable, pointabilities);
 	PointedThing result;
 	env.continueRaycast(&s, &result);
 	if (result.type == POINTEDTHING_OBJECT) {
 		hud->pointing_at_object = true;
+		g_settings->setBool("tbot_is_attacking", true);
 
 		runData.selected_object = client->getEnv().getActiveObject(result.object_id);
 		aabb3f selection_box{{0.0f, 0.0f, 0.0f}};

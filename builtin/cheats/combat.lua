@@ -180,7 +180,7 @@ core.get_send_speed = function(critspeed)
 end
 
 core.get_send_controls = function(controls)
-	if core.settings:get_bool("killaura") and core.settings:get("killaura.mode") == "Silent" and killaura_target then
+	if (core.settings:get_bool("killaura") and core.settings:get("killaura.mode") == "Silent" and killaura_target) or (core.settings:get_bool("tbot") and core.settings:get_bool("tbot_is_attacking")) then
 		controls.dig = true
 	end
 	return controls

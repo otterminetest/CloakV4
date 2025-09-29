@@ -154,7 +154,7 @@ core.register_cheat_description("AutoAim", "Combat", "autoaim", "Aims at a speci
 core.register_cheat_description("CombatLog", "Combat", "be_a_bitch", "Logs off when certain HP is reached")
 core.register_cheat_description("Criticals", "Combat", "critical_hits", "Does critical hits in mcl2/mcla")
 core.register_cheat_description("CrystalSpam", "Combat", "crystalspam", "Puts end crystals under the nearest player")
-core.register_cheat_description("Killaura", "Combat", "killaura", "Attacks a specified target")
+core.register_cheat_description("Killaura", "Combat", "killaura", "Attacks a specified target. Slient mode is recommended in PVP servers, as it makes Killaura undetectable")
 core.register_cheat_description("Orbit", "Combat", "orbit", "Moves around a specified target")
 core.register_cheat_description("TriggerBot", "Combat", "tbot", "Automatically punch when aiming at an entity")
 --Interact

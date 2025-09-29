@@ -185,6 +185,9 @@ invert_hotbar_mouse_wheel (Hotbar: Invert mouse wheel direction) bool false
 #    Key for toggling the Click GUI.
 keymap_toggle_cheat_menu (Toggle Click GUI) key KEY_KEY_F8
 
+#    Key for toggling DetachedCamera.
+keymap_toggle_detached_camera(Freecam) key KEY_KEY_F
+
 #    Key for toggling Freecam.
 keymap_toggle_freecam (Freecam) key KEY_KEY_G
 

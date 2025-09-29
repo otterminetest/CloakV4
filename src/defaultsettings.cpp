@@ -186,6 +186,7 @@ void set_default_settings()
 	settings->setDefault("combatlog.hp", "5");
 	settings->setDefault("autototem", "false");
 	settings->setDefault("tbot", "false");
+	settings->setDefault("tbot_is_attacking", "false");
 
 	//MOVEMENT
 	settings->setDefault("velocity", "false");
@@ -212,7 +213,7 @@ void set_default_settings()
 	settings->setDefault("BHOP.jump", "true");
 
 	//MISC
-	settings->setDefault("auto_heal", "true");
+	settings->setDefault("auto_heal", "false");
 	settings->setDefault("auto_heal.hp", "15");
 	settings->setDefault("auto_heal.delay", "0.1");
 	settings->setDefault("auto_heal.cooldown", "0.5");
@@ -225,7 +226,7 @@ void set_default_settings()
 	settings->setDefault("flagaura", "false");
 	settings->setDefault("flagaura.range", "5");
 	settings->setDefault("staff", "{}");
-	settings->setDefault("autostaff", "true");
+	settings->setDefault("autostaff", "false");
 	settings->setDefault("autostaff.warn_staff", "true");
 	settings->setDefault("antiafk", "false");
 	settings->setDefault("autoeject", "false");
@@ -366,7 +367,7 @@ void set_default_settings()
 	settings->setDefault("keymap_toggle_autoaim", "KEY_KEY_N");
 	settings->setDefault("keymap_toggle_scaffold", "KEY_KEY_Y");
 	settings->setDefault("keymap_toggle_blink", "KEY_KEY_B");
-	settings->setDefault("keymap_toggle_left_hand", "KEY_KEY_F");
+	settings->setDefault("keymap_toggle_detached_camera", "KEY_KEY_F");
 	USEKEY2("keymap_freemove", "SYSTEM_SCANCODE_14", "KEY_KEY_K");
 	settings->setDefault("keymap_pitchmove", "");
 	USEKEY2("keymap_fastmove", "SYSTEM_SCANCODE_13", "KEY_KEY_J");

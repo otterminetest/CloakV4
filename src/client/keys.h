@@ -67,7 +67,7 @@ public:
 		AUTOAIM,
 		SCAFFOLD,
         BLINK,
-		LH,
+		DETACHEDCAMERA,
 		ORBIT,
 
 		QUICKTUNE_NEXT,
