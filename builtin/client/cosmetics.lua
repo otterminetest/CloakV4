@@ -121,71 +121,76 @@ core.register_globalstep(function(dtime)
 	for parent_id, _ in pairs(cape_data) do
 		local cape_obj = core.get_active_object(cape_data[parent_id].object_id)
 		local parent_obj = core.get_active_object(parent_id)
-		-- calculate cape rotation based on parent object movement
-		local parent_velocity = {}
-		if not parent_obj then
-			cape_obj:remove()
-			cape_data[parent_id] = nil
-			return
-		end
-		if parent_obj:is_local_player() then
-			parent_velocity = core.localplayer:get_velocity()
-		else
-			parent_velocity = parent_obj:get_velocity()
-		end
-		local parent_yaw = parent_obj:get_rotation().y
-		
-		local yaw_rad = math.rad(parent_yaw)
 
-		local forward = vector.new(-math.sin(yaw_rad), 0, math.cos(yaw_rad))
-		local right = vector.new(math.cos(yaw_rad), 0, math.sin(yaw_rad))
-
-		local parent_forwardspeed = vector.dot(parent_velocity, forward)
-		local parent_strafespeed  = vector.dot(parent_velocity, right)
-
-		local wind_forward = vector.dot(world_wind, forward)
-		local wind_strafe  = vector.dot(world_wind, right)
-
-		local function clean(x, threshold)
-			threshold = threshold or 0.01
-			if math.abs(x) < threshold then
-				return 0
+		if cape_obj ~= nil and parent_obj ~= nil then
+			-- calculate cape rotation based on parent object movement
+			local parent_velocity
+			if parent_obj:is_local_player() then
+				parent_velocity = core.localplayer:get_velocity()
 			else
-				return x
+				parent_velocity = parent_obj:get_velocity()
+			end
+			local parent_yaw = parent_obj:get_rotation().y
+			
+			local yaw_rad = math.rad(parent_yaw)
+
+			local forward = vector.new(-math.sin(yaw_rad), 0, math.cos(yaw_rad))
+			local right = vector.new(math.cos(yaw_rad), 0, math.sin(yaw_rad))
+
+			local parent_forwardspeed = vector.dot(parent_velocity, forward)
+			local parent_strafespeed  = vector.dot(parent_velocity, right)
+
+			local wind_forward = vector.dot(world_wind, forward)
+			local wind_strafe  = vector.dot(world_wind, right)
+
+			local function clean(x, threshold)
+				threshold = threshold or 0.01
+				if math.abs(x) < threshold then
+					return 0
+				else
+					return x
+				end
+			end
+
+			parent_forwardspeed = clean(parent_forwardspeed)
+			parent_strafespeed  = clean(parent_strafespeed)
+
+			
+			local target_rotation_x = parent_forwardspeed * 10 + wind_forward * 10
+			local target_rotation_y = parent_strafespeed * 3 + wind_strafe * 10
+
+			if target_rotation_x < -5 then
+				target_rotation_x = -5
+			elseif target_rotation_x > 85 then
+				target_rotation_x = 85
+			end
+
+			if target_rotation_y < -90 then
+				target_rotation_y = -90
+			elseif target_rotation_y > 90 then
+				target_rotation_y = 90
+			end
+
+			local current_rotation_x = cape_data[parent_id].current_rotation_x
+			local current_rotation_y = cape_data[parent_id].current_rotation_y
+
+			local difference_x = target_rotation_x - current_rotation_x
+			local difference_y = target_rotation_y - current_rotation_y
+
+			current_rotation_x = current_rotation_x + (difference_x * 0.05)
+			current_rotation_y = current_rotation_y + (difference_y * 0.05)
+
+			cape_data[parent_id].current_rotation_x = current_rotation_x
+			cape_data[parent_id].current_rotation_y = current_rotation_y
+
+			cape_obj:set_attachment(parent_id, "Body", {x=0, y=0.63, z=0.12}, {x=5+current_rotation_x, y=180, z=current_rotation_y}, false)
+		else
+			if not cape_obj then
+				cape_data[parent_id] = nil
+			elseif not parent_obj then
+				cape_obj:remove()
+				cape_data[parent_id] = nil
 			end
 		end
-
-		parent_forwardspeed = clean(parent_forwardspeed)
-		parent_strafespeed  = clean(parent_strafespeed)
-
-		
-		local target_rotation_x = parent_forwardspeed * 10 + wind_forward * 10
-		local target_rotation_y = parent_strafespeed * 3 + wind_strafe * 10
-
-		if target_rotation_x < -5 then
-			target_rotation_x = -5
-		elseif target_rotation_x > 85 then
-			target_rotation_x = 85
-		end
-
-		if target_rotation_y < -90 then
-			target_rotation_y = -90
-		elseif target_rotation_y > 90 then
-			target_rotation_y = 90
-		end
-
-		local current_rotation_x = cape_data[parent_id].current_rotation_x
-		local current_rotation_y = cape_data[parent_id].current_rotation_y
-
-		local difference_x = target_rotation_x - current_rotation_x
-		local difference_y = target_rotation_y - current_rotation_y
-
-		current_rotation_x = current_rotation_x + (difference_x * 0.05)
-		current_rotation_y = current_rotation_y + (difference_y * 0.05)
-
-		cape_data[parent_id].current_rotation_x = current_rotation_x
-		cape_data[parent_id].current_rotation_y = current_rotation_y
-
-		cape_obj:set_attachment(parent_id, "Body", {x=0, y=0.63, z=0.12}, {x=5+current_rotation_x, y=180, z=current_rotation_y}, false)
 	end
 end)
