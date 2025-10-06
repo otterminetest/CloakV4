@@ -62,7 +62,7 @@ public:
     void create();
     void close();
 
-    virtual bool OnEvent(const irr::SEvent& event);
+    virtual bool OnEvent(const irr::SEvent& event) override;
     virtual void draw() override;
     bool isOpen() { return m_is_open; }
     
@@ -105,7 +105,6 @@ private:
     core::vector2d<s32> draggingHUDElementOffset;
     const s32 category_height = 34;
     s32 category_width = category_height * 5;
-    const s32 setting_width = category_height * 4.6;
     const s32 setting_bar_width = category_height * 0.1;
     const s32 setting_bar_padding = category_height * 0.1;
     const s32 slider_height_padding = category_height * 0.4;
@@ -160,8 +159,6 @@ private:
     video::SColor sliderColorActive = video::SColor(255, 125, 125, 125);
     video::SColor sliderBarColorActive = video::SColor(255, 66, 111, 195);
     video::SColor option_color = video::SColor(255, 2, 5, 8);
-    
-    s32 subCategoryHeight = category_height * 3;
 
     static float getDeltaTime();
 
