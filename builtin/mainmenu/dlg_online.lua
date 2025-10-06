@@ -274,7 +274,7 @@ local function get_formspec(tabview, name, tabdata_etc)
 		"align=inline,padding=0.25,width=1.5;" ..
 		"color,align=inline,span=1;" ..
 		"text,align=inline,padding=1]" ..
-		"table[0.25,1;8.25,6.3;servers;"
+		"table[0.25,1;8.25,7.1;servers;"
 
 	local servers = get_sorted_servers()
 

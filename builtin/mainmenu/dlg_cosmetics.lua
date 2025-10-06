@@ -38,13 +38,15 @@ local VISIBLE_CAPES = 3 -- Number of capes to show at once
 
 
 local start_index = 1
-
+local last_capes
 -- Returns the formspec for displaying capes in a scrollable 3-column grid
 local function get_formspec(dlgview, scroll_offset)
     scroll_offset = scroll_offset or 0
 
     -- Load capes if not already loaded
-    if capes_list == nil then
+    if capes_list == nil or last_capes ~= networking.Capes then
+        useless_placeholder_setting = 0
+        last_capes = networking.Capes
         if networking.Capes == nil then networking.Capes = {} end
         capes_list = {}
         for id, data in pairs(networking.Capes) do
@@ -61,13 +63,13 @@ local function get_formspec(dlgview, scroll_offset)
         table.sort(capes_list, function(a, b) return a.id < b.id end)
     end
 
-    local retval = "size[8.5,7.5,true]"
+    local retval = "size[8.5,8.5,true]"
 
     local start_x = 0.5
-    local start_y = 0.8
+    local start_y = 2
     local x, y = start_x, start_y
 
-    local dropdown_options = {"Enabled","Disabled"}
+    local dropdown_options = {"Public","Private"}
 
     local escaped_options = {}
     for _, opt in ipairs(dropdown_options) do
@@ -102,30 +104,33 @@ local function get_formspec(dlgview, scroll_offset)
         x = x + CAPE_WIDTH + GRID_PADDING
 
         useless_placeholder_setting = 1
+    end
+
     -- Navigation buttons
     if start_index > 1 then
-        retval = retval .. "button[0.2,5.5;2,1;prev;← Prev]"
+        retval = retval .. "button[0.2,6.5;2,1;prev;← Prev]"
     end
     if end_index < #capes_list then
-        retval = retval .. "button[6.2,5.5;2,1;next;Next →]"
+        retval = retval .. "button[6.2,6.5;2,1;next;Next →]"
     end
 
 
     -- Disable/Enable dropdown
-    retval = retval .. "dropdown[4.7,0;3.5;enable_cosmetics;" ..
+    retval = retval .. "dropdown[5.7,0.7;2.5;enable_cosmetics;" ..
     table.concat(escaped_options, ",") .. ";" .. selected_idx .. "]"
 
     retval = retval ..
-		"container[0,3.5]" ..
+		"container[0,4.5]" ..
 		"box[0,3;8.3,1;#cc5801]" ..
-		"textarea[0.5,3.1;8.3,1;;;It is recommended to not use capes in servers where you shouldn't be cheating, since other CloakV4 users may spot you]" ..
+		"textarea[0.5,3.1;8.3,1;;;It is recommended to set cosmetics to private in servers where you shouldn't be cheating, since other CloakV4 users may spot you]" ..
 		"container_end[]"
 
-    retval = retval .. "label[0.25,-0.1;Select a Cape]"
-    end
+    retval = retval .. "label[0.25,0.15;Select a Cape]"
+    
+    retval = retval .. "label[5.9,0.15;Cosmetic Visibilty]"
 
     -- Back button
-    retval = retval .. "button[2.25,5.5;4,1;back;Back]"
+    retval = retval .. "button[2.25,6.5;4,1;back;Back]"
     if useless_placeholder_setting == 0 then
         retval = retval ..
 	    	"container[0,-0.5]" ..
@@ -187,7 +192,6 @@ end
 
 
 function create_cosmetics_dlg()
-	
 	mm_game_theme.set_engine()
 	local retval = dialog_create("cosmetics",
 					get_formspec,

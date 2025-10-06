@@ -43,6 +43,8 @@ local function buttonhandler(this, fields)
 	elseif fields.guest then
 		cache_settings:set(LOGIN_PASSWORD_SETTING_NAME, "")
 		cache_settings:set(LOGIN_USERNAME_SETTING_NAME, "Guest")
+		core.settings:set(SESSION_TOKEN_SETTING_NAME, "")
+		fetch_capes()
 		this:delete()
 		return true
 	elseif fields.exit then

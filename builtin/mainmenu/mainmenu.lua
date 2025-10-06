@@ -127,6 +127,8 @@ local function main_menu_buttonhandler(this, fields)
 		core.close()
 		return true
 	elseif fields.logged_in then
+		core.settings:set(SESSION_TOKEN_SETTING_NAME, "")
+		fetch_capes()
 		local dlg = create_sign_in_dialog()
 		dlg:set_parent(this)
 		this:hide()

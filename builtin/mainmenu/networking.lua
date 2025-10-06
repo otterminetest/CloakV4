@@ -2,6 +2,7 @@ local API_SERVER_ADDRESS = "http://teamacedia.baselinux.net:22222/"
 --local API_SERVER_ADDRESS = "http://127.0.0.1:22222/"
 
 SESSION_TOKEN_SETTING_NAME = "session_token"
+TEAMACEDIA_USERNAME_SETTING_NAME = "teamacedia_username"
 
 networking = {}
 
@@ -36,6 +37,7 @@ function verify_login_credentials(username, password)
 		local ok, data = pcall(core.parse_json, result.data)
 		if ok and data.session_token then
 			core.settings:set(SESSION_TOKEN_SETTING_NAME, data.session_token)
+			core.settings:set(TEAMACEDIA_USERNAME_SETTING_NAME, username)
 			fetch_capes()
 			return true
 		end
@@ -106,6 +108,7 @@ function login_account(login_username, hashed_pw)
 		local ok, data = pcall(core.parse_json, result.data)
 		if ok and data.session_token then
 			core.settings:set(SESSION_TOKEN_SETTING_NAME, data.session_token)
+			core.settings:set(TEAMACEDIA_USERNAME_SETTING_NAME, login_username)
 		end
 		cache_settings:set(LOGIN_PASSWORD_SETTING_NAME, hashed_pw)
 		cache_settings:set(LOGIN_USERNAME_SETTING_NAME, login_username)
@@ -117,7 +120,7 @@ function login_account(login_username, hashed_pw)
 end
 
 function fetch_capes()
-
+	networking.Capes = {}
 	local session_token = core.settings:get(SESSION_TOKEN_SETTING_NAME)
 
 	local http = core.get_http_api()

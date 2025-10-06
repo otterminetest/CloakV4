@@ -2,6 +2,7 @@ local get_http_api = core.get_http_api
 core.get_http_api = nil
 
 local SESSION_TOKEN_SETTING_NAME = "session_token"
+local TEAMACEDIA_USERNAME_SETTING_NAME = "teamacedia_username"
 local API_SERVER_ADDRESS = "http://teamacedia.baselinux.net:22222/"
 --local API_SERVER_ADDRESS = "http://127.0.0.1:22222/"
 
@@ -15,6 +16,9 @@ networking.Capes = {}
 networking.SelectedCapes = {}
 
 networking.is_user_on_cloakv4 = function(joined_name_to_check)
+	if joined_name_to_check ==  core.localplayer:get_name() then
+		return true
+	end
     for _, user in ipairs(networking.CloakUsers) do
         if user.joined_name == joined_name_to_check then
             return true
@@ -24,6 +28,9 @@ networking.is_user_on_cloakv4 = function(joined_name_to_check)
 end
 
 networking.get_user_account_name = function(joined_name_to_check)
+	if joined_name_to_check ==  core.localplayer:get_name() then
+		return core.settings:get(TEAMACEDIA_USERNAME_SETTING_NAME)
+	end
     for _, user in ipairs(networking.CloakUsers) do
         if user.joined_name == joined_name_to_check then
             return user.username
@@ -260,6 +267,8 @@ networking.clear_player_cache = function(ingame_username)
 end
 
 ws.on_connect(function()
+	fetch_capes() -- always fetch cape date
+
 	if announce_join_and_leave then
 		local server_info = core.get_server_info()
 		local username = core.localplayer:get_name()
@@ -267,7 +276,6 @@ ws.on_connect(function()
 		local server_port = tostring(server_info.port)
 
 		announce_join(username, server_address, server_port)
-		fetch_capes()
 		core.register_on_shutdown(function()
 			announce_leave(username, server_address, server_port)
 		end)
