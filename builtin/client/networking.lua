@@ -49,9 +49,6 @@ networking.delete_user_by_username = function(teamacedia_username)
     return false
 end
 
-
-if session_token == "" or session_token == nil then return end
-
 local function announce_join(username, server_address, server_port)
 	core.log("action", username)
 	local http = get_http_api()
@@ -197,6 +194,9 @@ end
 
 
 networking.get_selected_cape = function(ingame_username)
+	
+	if session_token == "" or session_token == nil then return "unknown" end
+
 	local teamacedia_username = networking.get_user_account_name(ingame_username)
 	if teamacedia_username == false then
 		return "unknown"
@@ -265,6 +265,8 @@ networking.clear_player_cache = function(ingame_username)
 		return networking.delete_user_by_username(teamacedia_username)
 	end
 end
+
+if session_token == "" or session_token == nil then return end
 
 ws.on_connect(function()
 	fetch_capes() -- always fetch cape date
