@@ -16,7 +16,7 @@ local hud_id = nil
 core.register_globalstep(function(dtime)
 
 	ptime = ptime + dtime
-	if ptime > 0.25 then		
+	if ptime > (math.random(18, 31) / 100) then	
 		core.settings:set_bool("placing_node", false)
 		ptime = 0
 	end
@@ -78,8 +78,8 @@ core.register_globalstep(function(dtime)
 			local p = vector.round(vector.add(pos, {x = 0, y = -0.6, z = 0}))
 			local node = core.get_node_or_nil(p)
 			if not node or core.get_node_def(node.name).buildable_to then
-				core.place_node(p)
 				core.settings:set_bool("placing_node", true)
+				core.place_node(p)
 			end
 		end
 		if core.settings:get_bool("scaffold_plus") then
@@ -107,8 +107,8 @@ core.register_globalstep(function(dtime)
 					if dist <= max_distance then
 						local node = core.get_node_or_nil(world_pos)
 						if node and node.name == "air" then
-							core.place_node(world_pos)
 							core.settings:set_bool("placing_node", true)
+							core.place_node(world_pos)
 							nodes_placed = nodes_placed + 1
 						end
 
@@ -135,16 +135,16 @@ core.register_globalstep(function(dtime)
 			local positions = core.find_nodes_near(pos, 5, {"mcl_core:water_source", "mcl_core:water_floating", "default:water_source", "default:water_flowing"}, true)
 			for i, p in pairs(positions) do
 				if i > nodes_per_tick then return end
-				core.place_node(p)
 				core.settings:set_bool("placing_node", true)
+				core.place_node(p)
 			end
 		end
 		if core.settings:get_bool("block_lava") then
 			local positions = core.find_nodes_near(pos, 5, {"mcl_core:lava_source", "mcl_core:lava_floating", "default:lava_source", "default:lava_flowing"}, true)
 			for i, p in pairs(positions) do
 				if i > nodes_per_tick then return end
-				core.place_node(p)
 				core.settings:set_bool("placing_node", true)
+				core.place_node(p)
 			end
 		end
 		if core.settings:get_bool("autotnt") then
@@ -154,8 +154,8 @@ core.register_globalstep(function(dtime)
                 core.switch_to_item("mcl_tnt:tnt") 
 				if i > nodes_per_tick then return end
                     if core.switch_to_item("mcl_tnt:tnt") then
-				        core.place_node(vector.add(p, {x = 0, y = 1, z = 0}))
 						core.settings:set_bool("placing_node", true)
+				        core.place_node(vector.add(p, {x = 0, y = 1, z = 0}))
                     else end
 			end
 		end
