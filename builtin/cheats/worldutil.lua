@@ -4,14 +4,22 @@
 core.register_on_dignode(function(pos)
 	if core.settings:get_bool("replace") then
 		core.after(0, core.place_node, pos)
+
 	end
 end)
 
 local etime = 0
+local ptime = 0
 local uptime = 0
 local hud_id = nil
 
 core.register_globalstep(function(dtime)
+
+	ptime = ptime + dtime
+	if ptime > 0.25 then		
+		core.settings:set_bool("placing_node", false)
+		ptime = 0
+	end
 	etime = etime + dtime
 	if etime < 1 then return end
 	local player = core.localplayer
@@ -70,13 +78,8 @@ core.register_globalstep(function(dtime)
 			local p = vector.round(vector.add(pos, {x = 0, y = -0.6, z = 0}))
 			local node = core.get_node_or_nil(p)
 			if not node or core.get_node_def(node.name).buildable_to then
-				core.get_send_controls = function(controls)
-						if core.settings:get_bool("scaffold") and core.settings:get("scaffold.mode") == "Silent" then
-							controls.place = true
-						end
-					return controls
-				end
 				core.place_node(p)
+				core.settings:set_bool("placing_node", true)
 			end
 		end
 		if core.settings:get_bool("scaffold_plus") then
@@ -104,14 +107,9 @@ core.register_globalstep(function(dtime)
 					if dist <= max_distance then
 						local node = core.get_node_or_nil(world_pos)
 						if node and node.name == "air" then
-							core.get_send_controls = function(controls)
-								if core.settings:get_bool("scaffold_plus") and core.settings:get("scaffold_plus.mode") == "Silent" then
-									controls.place = true
-								end
-							return controls
-						end
-						core.place_node(world_pos)
-						nodes_placed = nodes_placed + 1
+							core.place_node(world_pos)
+							core.settings:set_bool("placing_node", true)
+							nodes_placed = nodes_placed + 1
 						end
 
 						-- Add surrounding positions to the queue
@@ -137,22 +135,16 @@ core.register_globalstep(function(dtime)
 			local positions = core.find_nodes_near(pos, 5, {"mcl_core:water_source", "mcl_core:water_floating", "default:water_source", "default:water_flowing"}, true)
 			for i, p in pairs(positions) do
 				if i > nodes_per_tick then return end
-					core.get_send_controls = function(controls)
-						controls.place = true
-						return controls
-					end
 				core.place_node(p)
+				core.settings:set_bool("placing_node", true)
 			end
 		end
 		if core.settings:get_bool("block_lava") then
 			local positions = core.find_nodes_near(pos, 5, {"mcl_core:lava_source", "mcl_core:lava_floating", "default:lava_source", "default:lava_flowing"}, true)
 			for i, p in pairs(positions) do
 				if i > nodes_per_tick then return end
-					core.get_send_controls = function(controls)
-						controls.place = true
-						return controls
-					end
 				core.place_node(p)
+				core.settings:set_bool("placing_node", true)
 			end
 		end
 		if core.settings:get_bool("autotnt") then
@@ -162,11 +154,8 @@ core.register_globalstep(function(dtime)
                 core.switch_to_item("mcl_tnt:tnt") 
 				if i > nodes_per_tick then return end
                     if core.switch_to_item("mcl_tnt:tnt") then
-						core.get_send_controls = function(controls)
-							controls.place = true
-							return controls
-						end
 				        core.place_node(vector.add(p, {x = 0, y = 1, z = 0}))
+						core.settings:set_bool("placing_node", true)
                     else end
 			end
 		end
@@ -194,10 +183,8 @@ end)
 
 core.register_cheat("Scaffold", "World", "scaffold")
 core.register_cheat_setting("Jump Delay", "World", "scaffold", "scaffold.jump_delay", {type="slider_float", min=0.0, max=0.8, steps=9})
-core.register_cheat_setting("Mode", "World", "scaffold", "scaffold.mode", {type="selectionbox", options={"Blatant", "Silent"}})
 core.register_cheat("ScaffoldPlus", "World", "scaffold_plus")
 core.register_cheat_setting("Jump Delay", "World", "scaffold_plus", "scaffold.jump_delay", {type="slider_float", min=0.0, max=0.8, steps=9})
-core.register_cheat_setting("Mode", "World", "scaffold_plus", "scaffold_plus.mode", {type="selectionbox", options={"Blatant", "Silent"}})
 core.register_cheat("BlockWater", "World", "block_water")
 core.register_cheat("BlockLava", "World", "block_lava")
 core.register_cheat("AutoTNT", "World", "autotnt")

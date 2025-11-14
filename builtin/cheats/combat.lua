@@ -1,4 +1,5 @@
 -------------- Killaura -----------------
+local is_behind_cover = false
 
 core.register_cheat_with_infotext("Killaura", "Combat", "killaura", "")
 core.register_cheat_setting("Target Mode", "Combat", "killaura", "targeting.target_mode", {type="selectionbox", options={"Nearest", "Lowest HP", "Highest HP"}})
@@ -180,11 +181,28 @@ core.get_send_speed = function(critspeed)
 end
 
 core.get_send_controls = function(controls)
-	if (core.settings:get_bool("killaura") and core.settings:get("killaura.mode") == "Silent" and killaura_target) or (core.settings:get_bool("tbot") and core.settings:get_bool("tbot_is_attacking")) then
+	if (core.settings:get_bool("killaura") and core.settings:get("killaura.mode") == "Silent" and killaura_target) then
+
+		if not core.settings:get_bool("killaura.throughwalls") then
+			if not is_behind_cover then
+				return controls
+			end
+		end
+
 		controls.dig = true
 	end
+
+	if (core.settings:get_bool("tbot") and core.settings:get_bool("tbot_is_attacking")) then
+		controls.dig = true
+	end
+
+	if (core.settings:get_bool("placing_node")) then
+		controls.place = true
+	end
+
 	return controls
 end
+
 
 
 function extendPoint(yaw, distance)
@@ -330,6 +348,7 @@ core.register_globalstep(function(dtime)
 				local enemy_pos = truncate_pos(target_enemy:get_pos())
 			
 				local has_los = not is_block_between(pos, enemy_pos, 1.0)
+				is_behind_cover = not is_block_between(pos, enemy_pos, 1.0)
 			
 				if (not has_los) then
 					return
