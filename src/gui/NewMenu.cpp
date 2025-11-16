@@ -137,7 +137,12 @@ void NewMenu::setColorsFromTheme(const ColorTheme theme)
 
 void NewMenu::setWidthFromMultiplier(const s32 multiplier)
 {
-    category_width = category_height * multiplier;
+    const float ratio = 5.0f;
+
+    category_height = Environment->getVideoDriver()->getScreenSize().Height * 0.035 * (multiplier / 10.0f);
+
+    category_width  = category_height * 5;
+
     if (m_initialized) {
         GET_SCRIPT_POINTER
         for (size_t i = 0; i < script->m_cheat_categories.size(); ++i) {
@@ -301,42 +306,23 @@ void NewMenu::create()
         ScriptApiCheatsCheatSetting* width_multiplier_setting = nullptr;
 
         for (auto *setting : appearance_cheat->m_cheat_settings) {
-            if (setting && setting->m_name == "Width Scale") {
+            if (setting && setting->m_name == "Menu size") {
                 width_multiplier_setting = setting;
                 break;
             }
         }
 
         if (!width_multiplier_setting) {
-            width_multiplier_setting = new ScriptApiCheatsCheatSetting("Width Scale", "WidthMultiplier");
+            width_multiplier_setting = new ScriptApiCheatsCheatSetting("Menu size", "WidthMultiplier");
             width_multiplier_setting->m_type = "selectionbox";
             appearance_cheat->m_cheat_settings.push_back(width_multiplier_setting);
         } else {
             width_multiplier_setting->m_options.clear();
         }
 
-        for (int i = 4; i <= 8; ++i) {
+        for (int i = 8; i <= 13; ++i) {
             width_multiplier_setting->m_options.push_back(new std::string(std::to_string(i)));
         }
-
-        // --- Ensure "Reload Themes" setting exists or update it ---
-        ScriptApiCheatsCheatSetting* reload_themes_setting = nullptr;
-
-        for (auto *setting : appearance_cheat->m_cheat_settings) {
-            if (setting && setting->m_name == "Reload Themes") {
-                reload_themes_setting = setting;
-                break;
-            }
-        }
-
-        if (!reload_themes_setting) {
-            reload_themes_setting = new ScriptApiCheatsCheatSetting("Reload Themes", "ReloadThemes");
-            reload_themes_setting->m_type = "bool";
-            appearance_cheat->m_cheat_settings.push_back(reload_themes_setting);
-        } else {
-            reload_themes_setting->m_type = "bool"; // Ensure correct type even if reused
-        }
-
 
         // START RESIZING ALL ARRAYS
         category_positions.resize(script->m_cheat_categories.size(), core::position2d<s32>(0, 0));

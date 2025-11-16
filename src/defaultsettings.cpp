@@ -145,7 +145,7 @@ void set_default_settings()
 	settings->setDefault("save_menu_category_positions", "true");
 	settings->setDefault("use_menu_grid", "true");
 	settings->setDefault("ColorTheme", "Modern");
-	settings->setDefault("WidthMultiplier", "5");
+	settings->setDefault("WidthMultiplier", "10");
 	
 	//============CHEATS============//
 

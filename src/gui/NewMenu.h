@@ -81,7 +81,7 @@ private:
 
     void setColorsFromTheme(const ColorTheme theme);
     void setWidthFromMultiplier(const s32 multiplier);
-
+    
     s32 roundToGrid(s32 num);
 
     std::string themes_path;
@@ -103,7 +103,7 @@ private:
     bool isDraggingHUDElement = false;
     size_t draggingHUDElementIndex = 0;
     core::vector2d<s32> draggingHUDElementOffset;
-    const s32 category_height = 34;
+    s32 category_height = 34;
     s32 category_width = category_height * 5;
     const s32 setting_bar_width = category_height * 0.1;
     const s32 setting_bar_padding = category_height * 0.1;
