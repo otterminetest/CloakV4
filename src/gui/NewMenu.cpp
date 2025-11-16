@@ -30,7 +30,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  *                                                                                                 *
  *                            This code is cursed as fuck, but it works.                           *
  *                       When you work on this file, increment the counter:                        *
- *                                   Total hours spent here: 187                                   *
+ *                                   Total hours spent here: 191                                   *
  *                                                                                                 *
  ***************************************************************************************************/
 
