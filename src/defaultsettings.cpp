@@ -301,6 +301,7 @@ void set_default_settings()
 	settings->setDefault("nametags", "false");
 	settings->setDefault("nametags.hp", "true");
 	settings->setDefault("nametags.status", "true");
+	settings->setDefault("nametags.height", "3");
 	settings->setDefault("fov_setting", "true");
 	settings->setDefault("fov.step", "72.0f");
 

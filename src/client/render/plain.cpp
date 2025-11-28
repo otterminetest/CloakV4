@@ -57,10 +57,16 @@ void DrawHUD::run(PipelineContext &context)
 			context.hud->drawCrosshair();
 
 		context.hud->drawLuaElements(context.client->getCamera()->getOffset());
-		context.client->getCamera()->drawNametags();
+		if (!g_settings->getBool("nametags")) {	
+			context.client->getCamera()->drawNametags();
+		}
 
 		if (g_settings->getBool("enable_health_esp")) {	
 			context.client->getCamera()->drawHealthESP(context.dtime);
+		}
+
+		if (g_settings->getBool("nametags")) {	
+			context.client->getCamera()->drawDiffNametag(context.dtime);
 		}
 	}
 	context.device->getGUIEnvironment()->drawAll();

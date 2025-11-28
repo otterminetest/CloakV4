@@ -710,6 +710,162 @@ void Camera::drawNametags()
 	}
 }
 
+void Camera::drawDiffNametag(float dtime)
+{
+    ClientEnvironment &env = m_client->getEnv();
+    gui::IGUIFont *font = g_fontengine->getFont();
+    if (!font)
+        return;
+
+    v3f origin = getPosition();
+
+    std::vector<DistanceSortedActiveObject> sortedObjects;
+    env.getAllActiveObjects(origin, sortedObjects);
+
+    video::IVideoDriver *driver = RenderingEngine::get_video_driver();
+    if (!driver)
+        return;
+
+    core::matrix4 trans =
+        m_cameranode->getProjectionMatrix() * m_cameranode->getViewMatrix();
+
+    v2u32 screensize = driver->getScreenSize();
+
+    for (auto &sortedObj : sortedObjects) {
+        ClientActiveObject *cao = sortedObj.obj;
+        GenericCAO *obj = dynamic_cast<GenericCAO *>(cao);
+
+        if (!obj)
+            continue;
+        if (obj->isLocalPlayer())
+            continue;
+        if (!obj->canAttack(1))
+            continue;
+        if (!obj->isPlayer())
+            continue;
+
+        scene::ISceneNode *node = obj->getSceneNode();
+        if (!node)
+            continue;
+
+        int h = stoi(g_settings->get("nametags.height"));
+        if (h < 1 || h > 9)
+            h = 5;
+        float heightdiff = (float)h;
+
+        aabb3f box(v3f(0,0,0), v3f(0,0,0));
+        obj->getCollisionBox(&box);
+        v3f textPos = node->getAbsolutePosition();
+        core::aabbox3d<f32> nodeBox = node->getBoundingBox();
+        textPos.Y += (nodeBox.MaxEdge.Y - nodeBox.MinEdge.Y) + heightdiff;
+
+        f32 pos4[4] = { textPos.X, textPos.Y, textPos.Z, 1.0f };
+        trans.multiplyWith1x4Matrix(pos4);
+
+        if (pos4[3] <= 0.0f)
+            continue;
+
+        f32 zDiv = 1.0f / pos4[3];
+
+        v2s32 screen;
+        screen.X = screensize.X * (0.5f * pos4[0] * zDiv + 0.5f);
+        screen.Y = screensize.Y * (0.5f - 0.5f * pos4[1] * zDiv);
+
+        std::string name = obj->getName();
+        int hp = obj->getHp();
+
+        bool showHp = g_settings->getBool("nametags.hp");
+        bool showStatus = g_settings->getBool("nametags.status");
+
+        LocalPlayer *lp = m_client->getEnv().getLocalPlayer();
+        int relation_int = lp->getEntityRelationship(obj);
+
+        std::string relationStr;
+        video::SColor relationColor(255, 128, 128, 128);
+
+        switch (relation_int) {
+            case 0:  // FRIEND
+                relationStr = "[Friend]";
+                relationColor = video::SColor(255, 255, 0, 255); // pink
+                break;
+
+            case 1:  // ENEMY
+                relationStr = "[Enemy]";
+                relationColor = video::SColor(255, 255, 0, 0); // red
+                break;
+
+            case 2:  // ALLY
+                relationStr = "[Ally]";
+                relationColor = video::SColor(255, 0, 255, 0); // green
+                break;
+
+            case 3:  // NEUTRAL
+                relationStr = "[Neutral]";
+                relationColor = video::SColor(255, 160, 160, 160); // grey
+                break;
+
+            default: // STAFF
+                relationStr = "[Staff]";
+                relationColor = video::SColor(255, 0, 0, 255); // blue
+                break;
+        }
+
+        std::wstring wname = utf8_to_wide(name);
+        std::wstring whp = utf8_to_wide(std::to_string(hp));
+        std::wstring wrelation = utf8_to_wide(relationStr);
+
+        auto dim_name = font->getDimension(wname.c_str());
+        auto dim_hp = font->getDimension(whp.c_str());
+        auto dim_rel = font->getDimension(wrelation.c_str());
+
+        int totalWidth = dim_name.Width;
+        if (showHp)
+            totalWidth += 8 + dim_hp.Width;
+        if (showStatus)
+            totalWidth += 8 + dim_rel.Width;
+
+        int height = std::max({dim_name.Height,
+                               showHp ? dim_hp.Height : 0,
+                               showStatus ? dim_rel.Height : 0});
+
+        int x = screen.X - totalWidth / 2;
+        int y = screen.Y - height / 2;
+
+        core::rect<s32> rectName(x, y,
+                                 x + dim_name.Width,
+                                 y + dim_name.Height);
+
+        font->draw(wname.c_str(), rectName,
+                   video::SColor(255, 255, 255, 255),
+                   false, false);
+
+        int offsetX = x + dim_name.Width + 8;
+
+        if (showHp) {
+            core::rect<s32> rectHp(offsetX, y,
+                                   offsetX + dim_hp.Width,
+                                   y + dim_hp.Height);
+
+            font->draw(whp.c_str(), rectHp,
+                       video::SColor(255, 0, 255, 0),
+                       false, false);
+
+            offsetX += dim_hp.Width + 8;
+        }
+
+        if (showStatus) {
+            core::rect<s32> rectRel(offsetX, y,
+                                    offsetX + dim_rel.Width,
+                                    y + dim_rel.Height);
+
+            font->draw(wrelation.c_str(), rectRel,
+                       relationColor,
+                       false, false);
+        }
+    }
+}
+
+
 /// @brief
 
 double Camera::getInterpolatedHealth(const GenericCAO *obj, float dtime) {
@@ -765,7 +921,14 @@ void Camera::drawHealthESP(float dtime)
         if (!obj->isPlayer() && g_settings->getBool("enable_health_esp.players_only"))
             continue;
 
-        v3f textPos = obj->getSceneNode()->getAbsolutePosition();
+        scene::ISceneNode* node = obj->getSceneNode();
+		if (!node) {
+		    continue;
+		}
+
+		v3f textPos = node->getAbsolutePosition();
+
+
         textPos.Y += 9.0f;
         f32 transformed_pos[4] = { textPos.X, textPos.Y, textPos.Z, 1.0f };
 

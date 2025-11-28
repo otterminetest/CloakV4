@@ -224,6 +224,8 @@ public:
 
 	void drawNametags();
 
+	void drawDiffNametag(float dtime);
+
 	void drawHealthESP(float dtime);
 
 	inline void addArmInertia(f32 player_yaw);

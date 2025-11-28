@@ -254,6 +254,7 @@ core.register_cheat_setting("Players Only", "Render", "enable_health_esp", "enab
 core.register_cheat_setting("Target highlight", "Render", "enable_combat_target_hud", "enable_combat_target_hud.target_highlight", {type="bool"})
 core.register_cheat_setting("HP", "Render", "nametags", "nametags.hp", {type="bool"})
 core.register_cheat_setting("Status Marker", "Render", "nametags", "nametags.status", {type="bool"})
+core.register_cheat_setting("Height", "Render", "nametags", "nametags.height", {type="slider_int", min=1, max=9, steps = 9});
 core.register_cheat_setting("Always jump", "Movement", "BHOP", "BHOP.jump", {type="bool"})
 core.register_cheat_setting("Always sprint", "Movement", "BHOP", "BHOP.sprint", {type="bool"})
 core.register_cheat_setting("1.2x speed boost", "Movement", "BHOP", "BHOP.speed", {type="bool"})
