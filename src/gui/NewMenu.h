@@ -81,6 +81,7 @@ private:
 
     void setColorsFromTheme(const ColorTheme theme);
     void setWidthFromMultiplier(const s32 multiplier);
+    void adjustCategoryPositions();
     
     s32 roundToGrid(s32 num);
 

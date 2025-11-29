@@ -30,8 +30,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
  *                                                                                                 *
  *                            This code is cursed as fuck, but it works.                           *
  *                       When you work on this file, increment the counter:                        *
- *                                   Total hours spent here: 191                                   *
+ *                                   Total hours spent here: 195                                   *
  *                                                                                                 *
+ *                        This makes me want to jump off a bridge -plus22                          *
  ***************************************************************************************************/
 
 #include "NewMenu.h"
@@ -149,6 +150,30 @@ void NewMenu::setWidthFromMultiplier(const s32 multiplier)
             respaceMenu(i);
         }
     }
+}
+
+void NewMenu::adjustCategoryPositions() {
+    if (!m_initialized) return;
+
+    video::IVideoDriver* driver = Environment->getVideoDriver();
+    auto newSize = driver->getScreenSize();
+
+    if (newSize == lastScreenSize)
+        return;
+
+    float scaleX = float(newSize.Width) / lastScreenSize.Width;
+    float scaleY = float(newSize.Height) / lastScreenSize.Height;
+
+    for (size_t i = 0; i < category_positions.size(); ++i) {
+        category_positions[i].X = std::round(category_positions[i].X * scaleX);
+        category_positions[i].Y = std::round(category_positions[i].Y * scaleY);
+    }
+
+    for (size_t i = 0; i < category_positions.size(); ++i) {
+        respaceMenu(i);
+    }
+
+    lastScreenSize = newSize;
 }
 
 void NewMenu::create()
@@ -625,8 +650,6 @@ void NewMenu::moveMenu(size_t i, core::position2d<s32> new_position)
 
     if (newX < 0) {
         newX = 0;
-    } else if (newX + categoryRects[i].getWidth() > screenWidth) {
-        newX = screenWidth - categoryRects[i].getWidth();
     }
     s32 cheats_height = categoryRects[i].getHeight();
     if (selectedCategory[i]){
@@ -643,8 +666,6 @@ void NewMenu::moveMenu(size_t i, core::position2d<s32> new_position)
     }
     if (newY < 0) {
         newY = 0;
-    } else if (newY + cheats_height > screenHeight) {
-        newY = screenHeight - cheats_height;
     }
     if (g_settings->exists("use_menu_grid") && g_settings->getBool("use_menu_grid") == true) {
         newX = std::round(newX / (category_height / 2)) * (category_height / 2);
@@ -673,6 +694,9 @@ bool NewMenu::OnEvent(const irr::SEvent& event)
             return true; 
         }
     }
+    
+    setWidthFromMultiplier(g_settings->getS32("WidthMultiplier"));
+    adjustCategoryPositions();
     
     if (event.EventType == irr::EET_MOUSE_INPUT_EVENT && !isEditing) {
         if (event.MouseInput.Event == irr::EMIE_LMOUSE_PRESSED_DOWN) {
