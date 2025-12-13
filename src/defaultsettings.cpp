@@ -187,6 +187,7 @@ void set_default_settings()
 	settings->setDefault("autototem", "false");
 	settings->setDefault("tbot", "false");
 	settings->setDefault("tbot_is_attacking", "false");
+	settings->setDefault("throughwalls", "false");
 
 	//MOVEMENT
 	settings->setDefault("velocity", "false");

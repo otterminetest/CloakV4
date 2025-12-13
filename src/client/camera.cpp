@@ -739,8 +739,6 @@ void Camera::drawDiffNametag(float dtime)
             continue;
         if (obj->isLocalPlayer())
             continue;
-        if (!obj->canAttack(1))
-            continue;
         if (!obj->isPlayer())
             continue;
 

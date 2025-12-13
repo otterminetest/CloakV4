@@ -56,6 +56,7 @@ core.cheats = {
 	["Combat"] = {
 		["AntiKnockback"] = "antiknockback",
 		["AttachmentFloat"] = "float_above_parent",
+		["ThroughWalls"] = "throughwalls",
     },
 	["Interact"] = {
 		["Blink"] = "blink",
@@ -157,6 +158,7 @@ core.register_cheat_description("CrystalSpam", "Combat", "crystalspam", "Puts en
 core.register_cheat_description("Killaura", "Combat", "killaura", "Attacks a specified target. Slient mode is recommended in PVP servers, as it makes Killaura undetectable")
 core.register_cheat_description("Orbit", "Combat", "orbit", "Moves around a specified target")
 core.register_cheat_description("TriggerBot", "Combat", "tbot", "Automatically punch when aiming at an entity")
+core.register_cheat_description("ThroughWalls", "Combat", "throughwalls", "Lets you hit players or entities through walls")
 --Interact
 core.register_cheat_description("FastDig", "Interact", "fastdig", "No block break cooldown")
 core.register_cheat_with_infotext("Blink", "Interact", "blink", "0ms")

@@ -2726,6 +2726,20 @@ PointedThing Game::updatePointedThing(
 	RaycastState s(shootline, look_for_object, liquids_pointable, pointabilities);
 	PointedThing result;
 	env.continueRaycast(&s, &result);
+
+	if (g_settings->getBool("throughwalls") && look_for_object && result.type == POINTEDTHING_NODE) {
+
+		PointedThing tmp = result;
+
+		while (tmp.type == POINTEDTHING_NODE) {
+			env.continueRaycast(&s, &tmp);
+		}
+
+		if (tmp.type == POINTEDTHING_OBJECT) {
+			result = tmp;
+		}
+	}
+
 	if (result.type == POINTEDTHING_OBJECT) {
 		hud->pointing_at_object = true;
 		g_settings->setBool("tbot_is_attacking", true);
