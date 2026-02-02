@@ -173,10 +173,10 @@ local function handle_buttons(dlgview, fields)
     end
 
     if fields.enable_cosmetics then
-            if fields.enable_cosmetics == "Enabled" then
+            if fields.enable_cosmetics == "Public" then
                 selected_idx = 1
                 core.settings:set_bool("announce_join", true)
-            elseif fields.enable_cosmetics == "Disabled" then
+            elseif fields.enable_cosmetics == "Private" then
                 selected_idx = 2
                 core.settings:set_bool("announce_join", false)
             end
