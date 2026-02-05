@@ -11,11 +11,16 @@ local cape_data = {}
 local world_wind = vector.new(0,0,0)
 local world_wind_target = vector.new(math.random()*2-1,0,math.random()*2-1)
 
+local static = core.settings:get_bool("static_cape")
+
 local function get_frame(frame_global, frame_count)
     return frame_global % frame_count
 end
 
 local function generate_texture_string(cape_id)
+	if static then
+		return "crown_cape.png"
+	end
     local cape_data = networking.get_cape_data(cape_id)
     if not cape_data or not cape_data.CapeTexture then
         return "crown_cape.png^[verticalframe:" .. 10 .. ":" .. get_frame(frame_global, 10)
