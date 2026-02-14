@@ -33,7 +33,7 @@ on:
 
 jobs:
   build-intel-macos:
-    runs-on: macos-13
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
       - name: Install deps
@@ -54,17 +54,11 @@ jobs:
           cmake --build . -j$(sysctl -n hw.logicalcpu)
           make install
 
-      - name: Build and Archive with Xcode
-        run: |
-          mkdir build_xcode
-          cd build_xcode
-          ../util/ci/build_xcode.sh
-
       - name: Create Artifact
         uses: actions/upload-artifact@v4
         with:
           name: macos-intel-build
-          path: build/macos/cloakv4.app
+          path: build/macos
 
   build-arm-macos-xcode:
     runs-on: macos-14
@@ -90,14 +84,8 @@ jobs:
           cmake --build . -j$(sysctl -n hw.logicalcpu)
           make install
 
-      - name: Build and Archive with Xcode
-        run: |
-          mkdir build_xcode
-          cd build_xcode
-          ../util/ci/build_xcode.sh
-
       - name: Create Artifact
         uses: actions/upload-artifact@v4
         with:
           name: macos-arm-build
-          path: build/macos/cloakv4.app
+          path: build/macos
