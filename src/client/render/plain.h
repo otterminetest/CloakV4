@@ -82,6 +82,7 @@ private:
 	bool draw_player_tracers;
 	bool draw_node_esp;
 	bool draw_node_tracers;
+	bool draw_tunnel_esp;
 
 
 
@@ -90,6 +91,7 @@ private:
 	video::SColor enemy_esp_color;
 	video::SColor allied_esp_color;
 	video::SColor staff_esp_color;
+	video::SColor tunnel_esp_color;
 	
 	int playerDT;
 	int playerEO;

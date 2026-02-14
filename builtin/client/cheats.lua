@@ -10,6 +10,7 @@ core.cheats = {
 		["PlayerTracers"] = "enable_player_tracers",
 		["NodeESP"] = "enable_node_esp",
 		["NodeTracers"] = "enable_node_tracers",
+		["TunnelESP"] = "enable_tunnel_esp",
 	--	["HUDBypass"] = "hud_flags_bypass", dont wanna work, will fix later
 		["HealthESP"] = "enable_health_esp",
 		["NoHurtCam"] = "no_hurt_cam",
@@ -228,7 +229,7 @@ core.register_cheat_description("NodeESP", "Render", "enable_node_esp", "See spe
 core.register_cheat_description("NodeTracers", "Render", "enable_node_tracers", "Draw tracers to specified nodes")
 core.register_cheat_description("PlayerESP", "Render", "enable_player_esp", "See players through walls")
 core.register_cheat_description("PlayerTracers", "Render", "enable_player_tracers", "Draw tracers to players")
---core.register_cheat_description("TunnelESP", "Render", "enable_tunnel_esp", "See tunnels through walls")
+core.register_cheat_description("TunnelESP", "Render", "enable_tunnel_esp", "See tunnels through walls")
 --core.register_cheat_description("TunnelTracers", "Render", "enable_tunnel_tracers", "Draw tracers to tunnels")
 core.register_cheat_description("Xray", "Render", "xray", "Don't render specific nodes")
 core.register_cheat_description("TargetHUD", "Render", "enable_combat_target_hud", "Shows best target on a HUD (depends on your combat settings)")

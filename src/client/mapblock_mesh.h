@@ -15,6 +15,7 @@
 #include <array>
 #include <map>
 #include <unordered_map>
+#include <set>
 
 namespace irr::video {
 	class IVideoDriver;
@@ -246,6 +247,7 @@ public:
 	}
 
 	std::set<v3s16> esp_nodes;
+	std::set<v3s16> tunnel_nodes;
 
 private:
 

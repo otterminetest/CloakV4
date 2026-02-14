@@ -24,6 +24,7 @@
 #include <SMesh.h>
 #include <IMeshBuffer.h>
 #include <SMeshBuffer.h>
+#include <set>
 
 /*
 	MeshMakeData
@@ -673,6 +674,89 @@ MapBlockMesh::MapBlockMesh(Client *client, MeshMakeData *data):
 			}
 		}
 	}
+
+	/*
+		TunnelESP
+	*/
+	if (g_settings->getBool("enable_tunnel_esp")) {
+		v3s16 blockpos_nodes = data->m_blockpos * MAP_BLOCKSIZE;
+		const NodeDefManager *ndef = data->m_nodedef;
+		
+		std::set<v3s16> candidates;
+
+		auto canWalkThrough = [&](v3s16 p) -> bool {
+			MapNode n = data->m_vmanip.getNodeNoExNoEmerge(p);
+			if (n.getContent() == CONTENT_IGNORE) return false;
+			const ContentFeatures &f = ndef->get(n);
+			return !f.walkable;
+		};
+
+		auto canWalkOn = [&](v3s16 p) -> bool {
+			MapNode n = data->m_vmanip.getNodeNoExNoEmerge(p);
+			if (n.getContent() == CONTENT_IGNORE) return false;
+			const ContentFeatures &f = ndef->get(n);
+			return f.walkable;
+		};
+
+		auto canWalkIn = [&](v3s16 p) -> bool {
+			if (!canWalkOn(p - v3s16(0, 1, 0))) return false;
+			if (!canWalkThrough(p)) return false;
+			if (canWalkThrough(p + v3s16(0, 2, 0))) return false;
+			return canWalkThrough(p + v3s16(0, 1, 0));
+		};
+
+		enum TunnelSide { Walkable, PartiallyBlocked, FullyBlocked };
+
+		auto getTunnelSide = [&](v3s16 p) -> TunnelSide {
+			if (canWalkIn(p)) return Walkable;
+			if (!canWalkThrough(p) && !canWalkThrough(p + v3s16(0, 1, 0))) return FullyBlocked;
+			return PartiallyBlocked;
+		};
+
+		for (s16 x = 0; x < MAP_BLOCKSIZE; x++) {
+			for (s16 y = 0; y < MAP_BLOCKSIZE; y++) {
+				for (s16 z = 0; z < MAP_BLOCKSIZE; z++) {
+					v3s16 pos = v3s16(x, y, z) + blockpos_nodes;
+
+					if (!canWalkIn(pos)) continue;
+
+					TunnelSide s1 = getTunnelSide(pos + v3s16(1, 0, 0));
+					TunnelSide s2 = getTunnelSide(pos + v3s16(-1, 0, 0));
+					TunnelSide s3 = getTunnelSide(pos + v3s16(0, 0, 1));
+					TunnelSide s4 = getTunnelSide(pos + v3s16(0, 0, -1));
+
+					if (s1 == PartiallyBlocked || s2 == PartiallyBlocked || 
+						s3 == PartiallyBlocked || s4 == PartiallyBlocked) continue;
+
+					bool xOpen = (s1 == Walkable && s2 == Walkable && s3 == FullyBlocked && s4 == FullyBlocked);
+					bool zOpen = (s1 == FullyBlocked && s2 == FullyBlocked && s3 == Walkable && s4 == Walkable);
+
+					if (xOpen || zOpen) {
+						candidates.insert(pos);
+					}
+				}
+			}
+		}
+
+		// Filter 1-block tunnels (unless at chunk boundary)
+		for (const auto &pos : candidates) {
+			v3s16 rel = pos - blockpos_nodes;
+			if (rel.X == 0 || rel.X == MAP_BLOCKSIZE - 1 || rel.Z == 0 || rel.Z == MAP_BLOCKSIZE - 1) {
+				tunnel_nodes.insert(pos);
+			} else {
+				bool has = false;
+				v3s16 dirs[4] = {v3s16(1,0,0), v3s16(-1,0,0), v3s16(0,0,1), v3s16(0,0,-1)};
+				for (auto d : dirs) {
+					if (candidates.count(pos + d)) {
+						has = true;
+						break;
+					}
+				}
+				if (has) tunnel_nodes.insert(pos);
+			}
+		}
+	}
+
 /*
 	  X-Ray settings
 	*/

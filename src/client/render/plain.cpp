@@ -93,18 +93,21 @@ void DrawTracersAndESP::run(PipelineContext &context)
 	draw_player_tracers = g_settings->getBool("enable_player_tracers");
 	draw_node_esp = g_settings->getBool("enable_node_esp");
 	draw_node_tracers = g_settings->getBool("enable_node_tracers");
+	draw_tunnel_esp = g_settings->getBool("enable_tunnel_esp");
 
 	v3f entity_color = g_settings->getV3F("entity_esp_color").value();
 	v3f friend_color = g_settings->getV3F("friend_esp_color").value();
 	v3f enemy_color = g_settings->getV3F("enemy_esp_color").value();
 	v3f allied_color = g_settings->getV3F("allied_esp_color").value();
 	v3f staff_color = g_settings->getV3F("staff_esp_color").value();
+	v3f tunnel_color_f = g_settings->getV3F("tunnel_esp_color").value_or(v3f(255, 175, 25));
 
 	entity_esp_color = video::SColor(255, entity_color.X, entity_color.Y, entity_color.Z);
 	friend_esp_color = video::SColor(255, friend_color.X, friend_color.Y, friend_color.Z);
 	enemy_esp_color = video::SColor(255, enemy_color.X, enemy_color.Y, enemy_color.Z);
 	allied_esp_color = video::SColor(255, allied_color.X, allied_color.Y, allied_color.Z);
 	staff_esp_color = video::SColor(255, staff_color.X, staff_color.Y, staff_color.Z);
+	tunnel_esp_color = video::SColor(255, tunnel_color_f.X, tunnel_color_f.Y, tunnel_color_f.Z);
 
 	int targetDT = 2;
 	int targetEO = 255;
@@ -245,6 +248,27 @@ void DrawTracersAndESP::run(PipelineContext &context)
 					if (draw_node_tracers)
 						driver->draw3DLine(eye_pos, box.getCenter(), color);
 				}
+			}
+		}
+	}
+
+	if (draw_tunnel_esp) {
+		Map &map = env.getMap();
+		std::vector<v3s16> positions;
+		map.listAllLoadedBlocks(positions);
+		for (v3s16 blockp : positions) {
+			MapBlock *block = map.getBlockNoCreate(blockp);
+			if (!block->mesh)
+				continue;
+			
+			for (v3s16 p : block->mesh->tunnel_nodes) {
+				v3f pos = intToFloat(p, BS) - camera_offset;
+				if ((intToFloat(p, BS) - player->getLegitPosition()).getLengthSQ() > (wanted_range * BS) * (wanted_range * BS))
+					continue;
+				
+				// Draw a flat box at the bottom of the node (height 0.1)
+				aabb3f box(pos, pos + v3f(BS, BS * 0.1f, BS));
+				driver->draw3DBox(box, tunnel_esp_color);
 			}
 		}
 	}
