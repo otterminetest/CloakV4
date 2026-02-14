@@ -40,6 +40,8 @@ jobs:
         run: |
           source ./util/ci/common.sh
           install_macos_deps
+          # brew jsoncpp do not include libjsoncpp.a, and if installed header conflict caused build failure
+          brew uninstall jsoncpp
 
       - name: Build
         run: |
