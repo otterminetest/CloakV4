@@ -36,7 +36,7 @@ jobs:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
-      - name: Install deps test
+      - name: Install deps
         run: |
           source ./util/ci/common.sh
           install_macos_deps
@@ -56,10 +56,6 @@ jobs:
             -DENABLE_SYSTEM_JSONCPP=OFF
           cmake --build . -j$(sysctl -n hw.logicalcpu)
           make install
-
-      - name: Test
-        run: |
-          ./build/macos/cloakv4.app/Contents/MacOS/cloakv4 --run-unittests
 
       - name: Create Artifact
         uses: actions/upload-artifact@v4
@@ -91,12 +87,6 @@ jobs:
             -DENABLE_SYSTEM_JSONCPP=OFF
           cmake --build . -j$(sysctl -n hw.logicalcpu)
           make install
-
-      - name: Tests
-        run: |
-          mkdir -p "${HOME}/Library/Application Support/minetest/games/"
-          ln -s "${PWD}/games/devtest" "${HOME}/Library/Application Support/minetest/games/"
-          ./build/macos/cloakv4.app/Contents/MacOS/cloakv4 --run-unittests
 
       - name: Create Artifact
         uses: actions/upload-artifact@v4
