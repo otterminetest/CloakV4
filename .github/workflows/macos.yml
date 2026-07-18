@@ -36,7 +36,7 @@ jobs:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
-      - name: Install deps
+      - name: Install deps test
         run: |
           source ./util/ci/common.sh
           install_macos_deps
